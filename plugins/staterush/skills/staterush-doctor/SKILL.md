@@ -112,7 +112,7 @@ Only when the person wants to run agents unattended on their own machine (see th
 
 - Some tools are missing from the list. Each tool appears only when the person's role
   allows it. A viewer sees reads and `workspaces`, a worker also sees the card writes,
-  and `retire` needs permission to shape boards.
+  and `retire` and `create_board` need permission to shape boards.
 - The hosted `retire` tool retires a whole **board** and asks for the board's name to
   confirm. It never retires a card. To take a single card off the line, claim it and
   `finish` it with the verdict its column offers for that (often `abandoned`).
@@ -121,7 +121,10 @@ Only when the person wants to run agents unattended on their own machine (see th
 - To file a card, use `add` (title, column, and optionally `ref`, `class` and `fields`).
   To move it to another lane, use `reclassify` with a `class` and a `why`. To label it,
   use `set_theme` with a theme the board declares. Leave `theme` out to clear it.
-- A board can't be created from here yet: use https://app.staterush.com, "New board".
+- To make a board, call `templates`, pick the template and choices that fit what the person
+  asked for, confirm the name with them, then `create_board`. Both need permission to shape
+  boards (owners and admins); without it, `create_board` is missing or refuses with
+  `PERMISSION_DENIED`, and the web app's "New board" is the other route.
 - The hosted server has no transcript, watch or supervisor tools. Those belong to the
   fleet tooling that runs a line (see `staterush-line`).
 

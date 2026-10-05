@@ -13,11 +13,12 @@ Tools
 - Work a card: `claim`, then `finish` with the station's verdict, or `release`.
 - `retire` retires a whole BOARD (it needs the board name confirmed). It is not a way to close a card.
 - `workspaces`: list workspaces, boards and the per-workspace connection URLs.
+- Make a board: `templates` lists the published board templates and their options; `create_board` creates one from a template (name, template, revision, choices). It needs the boards.shape permission, which owners and admins hold. The simple template's columns choice gives a todo -> doing -> done board.
 
 Good practice
 - Read the board before changing it, and quote card refs back to the person.
 - Ask before retiring anything, answering a question for someone else, or moving many cards.
-- Creating a board is done in the web app (https://app.staterush.com, "New board", from a template) until a board-creation tool exists here.
+- Before creating a board, call `templates` and pick the template and choices that match what the person asked for; confirm the board name with them.
 - If a tool says "workspace-required", this connection has no workspace selected: call `workspaces` and connect to the URL it gives for the one the person wants.
 - Running Claude Code over SSH: if sign-in sends the browser to http://localhost:<port>/ on the wrong machine, forward that port with `ssh -L <port>:localhost:<port>` and reload the page.
 
