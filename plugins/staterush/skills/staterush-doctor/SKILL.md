@@ -1,9 +1,15 @@
 ---
 name: staterush-doctor
-description: Doctor for the StateRush plugin. Use when the person asks whether StateRush is set up or signed in, which workspace or boards Claude can see, when sign-in fails or lands on a localhost page that won't load (often over SSH), when a StateRush board tool is missing or refuses with a code (workspace-required, PERMISSION_DENIED, not-owner, wip-full and the like), or before running fleet tools to check this machine meets their prerequisites.
+description: Doctor for the StateRush plugin. Use when the person asks whether StateRush is set up or signed in, which workspace or boards Claude can see, when sign-in fails or lands on a localhost page that won't load (often over SSH), when a StateRush board tool is missing or refuses with a code (workspace-required, PERMISSION_DENIED, not-owner, wip-full and the like), or before running fleet tools to check this machine meets their prerequisites. Also use at the start of any StateRush work in a session, to read the plugin's bundled client guide.
 ---
 
 # StateRush doctor
+
+**Read the client guide first.** The plugin ships StateRush's client guide at
+`$CLAUDE_PLUGIN_ROOT/client-guide.md` (the plugin root, two levels above this skill's
+folder). Read it once per session before working with StateRush: it says what the board
+tools do and how to use them well, and it may be the only copy you get, because the
+hosted server's own instructions don't always reach Claude Code.
 
 The plugin declares one MCP server, `staterush`, at `https://app.staterush.com/mcp`. It
 holds no keys. The person signs in with their own StateRush account through Claude

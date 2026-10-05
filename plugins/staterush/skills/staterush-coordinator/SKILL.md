@@ -5,6 +5,12 @@ description: Supervising a StateRush line as its coordinator. Use when the watch
 
 # Coordinating a StateRush line
 
+**Read the client guide first.** The plugin ships StateRush's client guide at
+`$CLAUDE_PLUGIN_ROOT/client-guide.md` (the plugin root, two levels above this skill's
+folder). Read it once per session before working with StateRush: it says what the board
+tools do and how to use them well, and it may be the only copy you get, because the
+hosted server's own instructions don't always reach Claude Code.
+
 The coordinator keeps the line moving on the person's behalf: answers workers, selects
 work, unsticks cards and approves what it has been trusted to approve. Everything here
 uses the board tools (`board`, `card`, `questions`, `line_health`, `claim`, `finish`,

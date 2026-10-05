@@ -5,6 +5,12 @@ description: Running a StateRush line, where agents and scripts work a board una
 
 # Running a StateRush line
 
+**Read the client guide first.** The plugin ships StateRush's client guide at
+`$CLAUDE_PLUGIN_ROOT/client-guide.md` (the plugin root, two levels above this skill's
+folder). Read it once per session before working with StateRush: it says what the board
+tools do and how to use them well, and it may be the only copy you get, because the
+hosted server's own instructions don't always reach Claude Code.
+
 ## The fleet tools ship as built bundles
 
 The plugin carries each fleet tool as one self-contained file under
