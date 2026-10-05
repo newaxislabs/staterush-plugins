@@ -116,9 +116,20 @@ Only when the person wants to run agents unattended on their own machine (see th
 
 ## Things that look like faults but are not
 
-- Some tools are missing from the list. Each tool appears only when the person's role
-  allows it. A viewer sees reads and `workspaces`, a worker also sees the card writes,
-  and `retire` and `create_board` need permission to shape boards.
+- Some board tools are missing from the list because visibility follows the person's
+  workspace permissions. The hosted `tools/list` visibility for human workspace roles is:
+
+  | Role | `templates` | card writes | `create_board` |
+  |---|---|---|---|
+  | viewer | yes | no | no |
+  | worker | yes | yes | no |
+  | reviewer | yes | yes | no |
+  | admin | yes | yes | yes |
+  | owner | yes | yes | yes |
+
+  Here, card writes include `claim`, `finish`, `note`, and `add`. `templates`
+  requires `boards.read`; card writes require `cards.work`; `create_board` and
+  `retire` require `boards.shape`. `workspaces` is visible without those permissions.
 - The hosted `retire` tool retires a whole **board** and asks for the board's name to
   confirm. It never retires a card. To take a single unclaimed card off the line, an owner
   or admin uses `abandon` (board, card, why). Otherwise claim it and `finish` it with the
@@ -129,9 +140,11 @@ Only when the person wants to run agents unattended on their own machine (see th
   To move it to another lane, use `reclassify` with a `class` and a `why`. To label it,
   use `set_theme` with a theme the board declares. Leave `theme` out to clear it.
 - To make a board, call `templates`, pick the template and choices that fit what the person
-  asked for, confirm the name with them, then `create_board`. Both need permission to shape
-  boards (owners and admins); without it, `create_board` is missing or refuses with
-  `PERMISSION_DENIED`, and the web app's "New board" is the other route.
+  asked for, confirm the name with them, then `create_board`. `templates` needs
+  `boards.read`, so a viewer can discover templates. `create_board` needs
+  `boards.shape`, granted to owners and admins. Without it, `create_board` is absent
+  from `tools/list`; a direct invocation refuses with `PERMISSION_DENIED`. A person
+  without permission can ask an owner or admin to create the board.
 - The hosted server has no transcript, watch or supervisor tools. Those belong to the
   fleet tooling that runs a line (see `staterush-line`).
 
@@ -141,3 +154,5 @@ one into a file or a command line.
 ## Local agent station
 
 On macOS, use `staterush-station up <board> [column] [--key-file path] [--root path]` to prepare this machine's authorized managed runbook lane. The key file contains one line and is passed to `staterush-login` on stdin. A saved machine login can be reused. The user agent plist lives in `~/Library/LaunchAgents`, so it loads at login. `staterush-station down <board>` disables it and drains workers; `staterush-station status <board>` shows lane state, live PID, running bundle version when reported by that PID, and last spawn availability. An unreadable board, invalid login, unsafe authorized-boards file or staffing driver that does not name this host makes up refuse before launchd starts.
+
+On Linux, the same `staterush-station up <board> [column] [--key-file path] [--root path]` command installs a per-board systemd user service when the user manager answers. Configure login persistence or lingering as needed. Without a user systemd manager, it installs a user cron keepalive that checks once a minute and locks against duplicate dispatchers. `staterush-station status <board>` names the supervisor and reports unavailable fields explicitly; `staterush-station down <board>` removes the supervisor and requests drain. For a refused up, check machine credentials, board readability, the authorized-boards file, and matching managed staffing. For a stopped systemd lane, inspect `systemctl --user status staterush-station-<board>.service` and its user journal; for cron, inspect `crontab -l` and confirm the cron daemon runs.
