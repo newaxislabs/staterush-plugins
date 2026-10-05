@@ -15,4 +15,4 @@ The plugin's skills, which Claude uses when they apply:
 - `staterush-coordinator`: supervising a line: answering workers, selecting work, approvals, filing cards.
 
 `plugins/staterush/client-guide.md` is the short guide the StateRush server gives Claude on connecting; the skills carry the detail.
-The fleet tools themselves ship in a later plugin release.
+Since 0.3.0 the plugin also carries the fleet tools that run a line, as built bundles under `plugins/staterush/dist/` (no source).
