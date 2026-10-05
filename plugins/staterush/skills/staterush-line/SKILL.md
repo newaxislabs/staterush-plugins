@@ -63,8 +63,10 @@ run unattended, and their actions should be recorded as the lane, not as the per
 
 - `staterush-login` stores a key without it touching shell history: it reads exactly
   one key line from stdin, with `PULLBOARD_ENGINE` (e.g.
-  `https://app.staterush.com/graphql`) and `PULLBOARD_TENANT` (the workspace id) set,
-  and writes a mode-0600 credentials file. `PULLBOARD_API_KEY` and `PULLBOARD_TENANT`
+  `https://app.staterush.com/graphql`) set, and writes a mode-0600 credentials file.
+  Leave `PULLBOARD_TENANT` unset: login asks StateRush which workspace the key belongs
+  to. Only if it says StateRush could not tell, set `PULLBOARD_TENANT` to the workspace
+  id, which a workspace owner can give the person. `PULLBOARD_API_KEY` and `PULLBOARD_TENANT`
   in a lane's environment override it.
 - The relay uses its own ingest credential, `PULLBOARD_INGEST_API_KEY`.
 - Never print a key, never put one on a command line or in the plugin directory, and

@@ -1,6 +1,6 @@
 {
   "name": "staterush",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Work a StateRush board from Claude Code through the hosted StateRush MCP: sign in once with your StateRush account, no keys and no local server.",
   "author": {
     "name": "New Axis Labs"
