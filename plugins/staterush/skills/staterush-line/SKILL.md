@@ -29,6 +29,15 @@ The board's **staffing** says who works each station:
 - **person station:** nothing is automatic. A person claims the card and finishes it.
   An unstaffed column that carries verdicts is a person station by definition.
 
+A station can be staffed by **several machines**. Each staffing rule names a `driver`
+(the hostname whose dispatcher serves it, or `any` for every machine) and may carry
+`matches` over card fields, `class`, `theme` or `labourOwnerPrincipalId`. The last
+matching rule wins a card, so "the Mac takes priya's cards" is rule 0 `driver: <the workstation's hostname>`
+with no predicate, then rule 1 `driver: <the Mac's hostname>` matching field
+`requester` equal to `priya`. A dispatcher serves only its own and `any` rules, and the
+engine hands each rule only its own cards. When one machine's share starves,
+`line_health` and the watcher name the rule index and its `driver`.
+
 Work is pulled, never pushed: a finished card waits with its verdict until the next
 station that accepts that verdict has room. Column and section limits (WIP) count
 cards standing in the column, claimed or not.
@@ -143,6 +152,9 @@ Then check the lane:
    `set_fields` on the unheld card usually moves it within seconds.
 4. **Nobody serves the column at all:** an unstaffed column with work waiting needs a
    person (`BY_HAND_VERDICT`), or the staffing is missing a rule. Say which; don't guess.
+5. **One machine's share is starved:** on a station several machines staff, a starved
+   rule's `driver` says whose dispatcher isn't taking its cards. Check that machine's
+   lane, and that its hostname is exactly the rule's `driver`.
 
 Rules that cost real nights to learn:
 

@@ -12,7 +12,7 @@ Tools
 - Change: `add` (file a card into a column, optionally with class and fields), `note`, `set_fields`, `set_theme`, `reclassify`, `ask`, `answer`.
 - Work a card: `claim`, then `finish` with the station's verdict, or `release`.
 - `retire` retires a whole BOARD (it needs the board name confirmed). It is not a way to close a card.
-- `workspaces`: list workspaces, boards and the per-workspace connection URLs.
+- `workspaces`: list workspaces (each with its id, slug, name and access), their boards and the per-workspace connection URLs. The id is what an API key setup or the X-Tenant header needs; use it rather than asking the person.
 - Make a board: `templates` lists the published board templates and their options; `create_board` creates one from a template (name, template, revision, choices). It needs the boards.shape permission, which owners and admins hold. The simple template's columns choice gives a todo -> doing -> done board.
 
 Good practice
@@ -24,6 +24,7 @@ Good practice
 
 Running your own line (agents working a board unattended)
 - A line has stations: columns where work is done by an agent, by a script, or by a person. A board's staffing says which.
+- Several machines can staff one station. Each staffing rule names a `driver` (a hostname, or `any` for every machine) and can carry `matches` over card fields, class, theme or labour owner, e.g. rule 0 on the workstation takes everything and rule 1 on the Mac takes cards whose requester is priya. The last matching rule wins, and each machine's dispatcher claims only its rules' cards.
 - The StateRush plugin's fleet tools run the line on the person's own machine: the dispatcher (starts an agent worker for each card an agent station should take), the script runner (runs a board's script stations, such as checks, merge and deploy), the relay (forwards workers' telemetry and transcripts), the spy (streams a worker's transcript to the web app on demand) and the watcher (wakes a supervising Claude session when a person is needed: an open question, a stalled station, a silent worker).
 - Lanes run with a workspace API key issued by an owner in the web app, never with the person's own sign-in. The board's station scripts and runbooks live in the board owner's own repository.
 - Supervising a line (the coordinator role): answer workers' questions promptly, select cards waiting in Backlog, watch for stalled stations, and approve releases. The plugin's skills explain each duty; use them rather than improvising.
