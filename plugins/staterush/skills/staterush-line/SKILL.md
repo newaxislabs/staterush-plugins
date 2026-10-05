@@ -57,7 +57,7 @@ service supervisor (systemd, launchd, a SysV service, or cron plus a keepalive).
 |---|---|---|
 | dispatcher | `dist/staterush-dispatch.mjs <board> loop` | starts an agent worker per card an agent station should take; renews leases and records each worker's result |
 | script runner | `dist/staterush-run-scripts.mjs <board>` | runs the board's script stations; exit code is the verdict |
-| relay | `dist/staterush-relay.mjs start` | receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush |
+| relay | `dist/staterush-relay.mjs start` | optional: receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush. Without it workers run unobserved ("RELAY DOWN") but still work |
 | spy | `dist/staterush-spy.mjs` | streams a running worker's transcript to the web app when someone opens it |
 | watcher | `dist/staterush-watch.mjs run` | wakes a supervising Claude session when a person is needed (see `staterush-coordinator`) |
 | keepalive | the person's supervisor or cron job | restarts a lane that has died; not a StateRush binary |
