@@ -97,10 +97,11 @@ Only when the person wants to run agents unattended on their own machine (see th
 `staterush-line` skill). Check each and report what is missing:
 
 - **Node 20 or newer:** `node --version`.
-- **The fleet tools are present** in the installed plugin: `ls "$CLAUDE_PLUGIN_ROOT/bin"`
-  should list `staterush-dispatch.js`, `staterush-run-scripts.js`, `staterush-relay.js`,
-  `staterush-spy.js` and `staterush-watch.js`. This plugin release does not include them
-  yet; if they are absent, say so plainly and stop. Do not substitute other tools.
+- **The fleet tools are present** in the installed plugin: `ls "$CLAUDE_PLUGIN_ROOT/dist"`
+  should list `staterush-dispatch.mjs`, `staterush-run-scripts.mjs`, `staterush-relay.mjs`,
+  `staterush-spy.mjs` and `staterush-watch.mjs`. `node "$CLAUDE_PLUGIN_ROOT/dist/staterush-dispatch.mjs" --help`
+  should print its usage. If they are absent, the plugin is older than 0.3.0: run
+  `claude plugin update staterush@staterush`. Do not substitute other tools.
 - **A lane credential:** a workspace API key issued by a workspace owner in the web app,
   stored on this machine for the lane (never the person's own sign-in, never pasted into
   chat). Check that a credential is configured without printing it.

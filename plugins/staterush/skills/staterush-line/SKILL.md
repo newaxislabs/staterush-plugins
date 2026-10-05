@@ -5,14 +5,16 @@ description: Running a StateRush line, where agents and scripts work a board una
 
 # Running a StateRush line
 
-## Status of the fleet tools in this plugin
+## The fleet tools ship as built bundles
 
-The fleet tool executables are **not in this plugin release**; they ship in a later
-one. Check with `ls "$CLAUDE_PLUGIN_ROOT/bin"`. If `staterush-dispatch.js` and its
-siblings are absent, tell the person the fleet tools aren't installed yet and stop
-there. Do not improvise a dispatcher, a polling loop, a cron job that claims cards, or
-a script that drives the board API. Everything below about reading the line through
-the board tools (`board`, `card`, `line_health`, `questions`) works today.
+The plugin carries each fleet tool as one self-contained file under
+`$CLAUDE_PLUGIN_ROOT/dist/` (`staterush-dispatch.mjs` and its siblings); run them with
+`node`. There is no source tree in the plugin and nothing to install. If
+`ls "$CLAUDE_PLUGIN_ROOT/dist"` shows no `staterush-*.mjs` files, the installed plugin is
+older than 0.3.0: tell the person to run `claude plugin update staterush@staterush` and
+stop there. Never improvise a dispatcher, a polling loop, a cron job that claims cards,
+or a script that drives the board API in their place. Reading the line through the
+board tools (`board`, `card`, `line_health`, `questions`) needs no fleet tools at all.
 
 ## What a line is
 
@@ -38,14 +40,17 @@ service supervisor (systemd, launchd, a SysV service, or cron plus a keepalive).
 
 | tool | executable | its job |
 |---|---|---|
-| dispatcher | `bin/staterush-dispatch.js <board> loop` | starts an agent worker per card an agent station should take; renews leases and records each worker's result |
-| script runner | `bin/staterush-run-scripts.js <board>` | runs the board's script stations; exit code is the verdict |
-| relay | `bin/staterush-relay.js start` | receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush |
-| spy | `bin/staterush-spy.js` | streams a running worker's transcript to the web app when someone opens it |
-| watcher | `bin/staterush-watch.js run` | wakes a supervising Claude session when a person is needed (see `staterush-coordinator`) |
+| dispatcher | `dist/staterush-dispatch.mjs <board> loop` | starts an agent worker per card an agent station should take; renews leases and records each worker's result |
+| script runner | `dist/staterush-run-scripts.mjs <board>` | runs the board's script stations; exit code is the verdict |
+| relay | `dist/staterush-relay.mjs start` | receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush |
+| spy | `dist/staterush-spy.mjs` | streams a running worker's transcript to the web app when someone opens it |
+| watcher | `dist/staterush-watch.mjs run` | wakes a supervising Claude session when a person is needed (see `staterush-coordinator`) |
 | keepalive | the person's supervisor or cron job | restarts a lane that has died; not a StateRush binary |
 
-All run with Node 20 or newer, from the installed plugin root. A supervisor won't
+All run with Node 20 or newer as `node "$CLAUDE_PLUGIN_ROOT/dist/<tool>.mjs" ...`. The
+same folder also has `staterush-login`, `-board`, `-wait`, `-wake`, `-owner`, `-verify`,
+`-mcp` and `-harness-adapter`, and the worker wrapper the dispatcher uses. Each answers
+`--help` with its usage or a one-line refusal naming what it needs. A supervisor won't
 inherit Claude Code's environment, so resolve `CLAUDE_PLUGIN_ROOT` to an absolute path
 in the service definition. Keep service configuration outside the plugin directory so
 plugin updates don't erase it.
@@ -79,8 +84,8 @@ station command.
 
 1. Read the lane's service configuration and check whether it is already running. Never
    launch a second copy: a dispatcher refuses to share a board, but other tools may not.
-2. Verify the chosen executable and its `package.json` exist under the plugin root, and
-   point the service at this installed root if it names another.
+2. Verify the chosen `dist/<tool>.mjs` exists under the plugin root, and point the
+   service at this installed root if it names another.
 3. Start it through its supervisor. Confirm a live main PID and read the log for
    startup refusals (a missing credential, an unknown board, a station preflight).
 
@@ -101,9 +106,9 @@ station command.
 ## Inspect a lane, and the version actually running
 
 Read the service's state, main PID, command line and recent log. From the live PID's
-command line (`ps -p <pid> -o args=`), resolve the `bin/staterush-*.js` path to its
-adjacent `package.json` and report its `version` as the **running** version, with the
-tool, PID and plugin root. The version under the current `CLAUDE_PLUGIN_ROOT` describes
+command line (`ps -p <pid> -o args=`), take the plugin root the `dist/staterush-*.mjs`
+path sits in and report the `version` in that root's `.claude-plugin/plugin.json` as the
+**running** version, with the tool, PID and plugin root. The version under the current `CLAUDE_PLUGIN_ROOT` describes
 the installed copy, not necessarily the running one. If the live path can't be
 established, say the running version is unknown.
 
