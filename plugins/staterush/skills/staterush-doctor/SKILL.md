@@ -120,8 +120,9 @@ Only when the person wants to run agents unattended on their own machine (see th
   allows it. A viewer sees reads and `workspaces`, a worker also sees the card writes,
   and `retire` and `create_board` need permission to shape boards.
 - The hosted `retire` tool retires a whole **board** and asks for the board's name to
-  confirm. It never retires a card. To take a single card off the line, claim it and
-  `finish` it with the verdict its column offers for that (often `abandoned`).
+  confirm. It never retires a card. To take a single unclaimed card off the line, an owner
+  or admin uses `abandon` (board, card, why). Otherwise claim it and `finish` it with the
+  verdict its column offers for that (often `abandoned`).
 - The hosted `select` tool only lists the cards waiting at a station. To take one, use
   `claim` with that station and the card.
 - To file a card, use `add` (title, column, and optionally `ref`, `class` and `fields`).
