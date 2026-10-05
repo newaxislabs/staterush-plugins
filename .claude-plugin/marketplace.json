@@ -1,0 +1,12 @@
+{
+  "name": "staterush",
+  "owner": { "name": "New Axis Labs" },
+  "description": "New Axis Labs' Claude Code plugins for StateRush.",
+  "plugins": [
+    {
+      "name": "staterush",
+      "source": "./plugins/staterush",
+      "description": "Work a StateRush board from Claude Code through the hosted StateRush MCP."
+    }
+  ]
+}
