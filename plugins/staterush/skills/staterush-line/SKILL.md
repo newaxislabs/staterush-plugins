@@ -6,19 +6,17 @@ description: Running a StateRush line, where agents and scripts work a board una
 # Running a StateRush line
 
 **Read the client guide first.** The plugin ships StateRush's client guide at
-`$CLAUDE_PLUGIN_ROOT/client-guide.md` (the plugin root, two levels above this skill's
-folder). Read it once per session before working with StateRush: it says what the board
+`../../client-guide.md` (relative to this skill's folder). Read it once per session before working with StateRush: it says what the board
 tools do and how to use them well, and it may be the only copy you get, because the
 hosted server's own instructions don't always reach Claude Code.
 
 ## The fleet tools ship as built bundles
 
-The plugin carries each fleet tool as one self-contained file under
-`$CLAUDE_PLUGIN_ROOT/dist/` (`staterush-dispatch.mjs` and its siblings); run them with
-`node`. There is no source tree in the plugin and nothing to install. If
-`ls "$CLAUDE_PLUGIN_ROOT/dist"` shows no `staterush-*.mjs` files, the installed plugin is
-older than 0.3.0: tell the person to run `claude plugin update staterush@staterush` and
-stop there. Never improvise a dispatcher, a polling loop, a cron job that claims cards,
+The plugin carries each fleet tool as a self-contained bundle. For shell commands,
+install the StateRush client launchers on `PATH` and invoke them as `staterush-*`.
+Use `staterush-dispatch --help` to check the installation before starting a lane.
+The Claude plugin alone does not put launchers on a session shell's `PATH`.
+Never improvise a dispatcher, a polling loop, a cron job that claims cards,
 or a script that drives the board API in their place. Reading the line through the
 board tools (`board`, `card`, `line_health`, `questions`) needs no fleet tools at all.
 
@@ -55,20 +53,20 @@ service supervisor (systemd, launchd, a SysV service, or cron plus a keepalive).
 
 | tool | executable | its job |
 |---|---|---|
-| dispatcher | `dist/staterush-dispatch.mjs <board> loop` | starts an agent worker per card an agent station should take; renews leases and records each worker's result |
-| script runner | `dist/staterush-run-scripts.mjs <board>` | runs the board's script stations; exit code is the verdict |
-| relay | `dist/staterush-relay.mjs start` | optional: receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush. Without it workers run unobserved ("RELAY DOWN") but still work |
-| spy | `dist/staterush-spy.mjs` | streams a running worker's transcript to the web app when someone opens it |
-| watcher | `dist/staterush-watch.mjs run` | wakes a supervising Claude session when a person is needed (see `staterush-coordinator`) |
+| dispatcher | `staterush-dispatch <board> loop` | starts an agent worker per card an agent station should take; renews leases and records each worker's result |
+| script runner | `staterush-run-scripts <board>` | runs the board's script stations; exit code is the verdict |
+| relay | `staterush-relay start` | optional: receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush. Without it workers run unobserved ("RELAY DOWN") but still work |
+| spy | `staterush-spy` | streams a running worker's transcript to the web app when someone opens it |
+| watcher | `staterush-watch run` | wakes a supervising Claude session when a person is needed (see `staterush-coordinator`) |
 | keepalive | the person's supervisor or cron job | restarts a lane that has died; not a StateRush binary |
 
-All run with Node 20 or newer as `node "$CLAUDE_PLUGIN_ROOT/dist/<tool>.mjs" ...`. The
-same folder also has `staterush-login`, `-board`, `-wait`, `-wake`, `-owner`, `-verify`,
-`-mcp` and `-harness-adapter`, and the worker wrapper the dispatcher uses. Each answers
-`--help` with its usage or a one-line refusal naming what it needs. A supervisor won't
-inherit Claude Code's environment, so resolve `CLAUDE_PLUGIN_ROOT` to an absolute path
-in the service definition. Keep service configuration outside the plugin directory so
-plugin updates don't erase it.
+All require Node 20 or newer. The client tools also include `staterush-login`,
+`staterush-board`, `staterush-wait`, `staterush-wake`, `staterush-owner`,
+`staterush-verify`, `staterush-mcp` and `staterush-harness-adapter`. Each answers
+`--help` with its usage or a one-line refusal naming what it needs. Configure the
+supervisor with an absolute path to the installed launcher from
+`command -v staterush-dispatch` (or the corresponding tool). Keep service
+configuration outside the plugin directory so plugin updates don't erase it.
 
 ## Credentials
 
@@ -101,8 +99,8 @@ station command.
 
 1. Read the lane's service configuration and check whether it is already running. Never
    launch a second copy: a dispatcher refuses to share a board, but other tools may not.
-2. Verify the chosen `dist/<tool>.mjs` exists under the plugin root, and point the
-   service at this installed root if it names another.
+2. Verify the tool's installed launcher is on `PATH` and responds to `--help`.
+   Point the service at its absolute launcher path if it names another installation.
 3. Start it through its supervisor. Confirm a live main PID and read the log for
    startup refusals (a missing credential, an unknown board, a station preflight).
 
@@ -123,11 +121,14 @@ station command.
 ## Inspect a lane, and the version actually running
 
 Read the service's state, main PID, command line and recent log. From the live PID's
-command line (`ps -p <pid> -o args=`), take the plugin root the `dist/staterush-*.mjs`
-path sits in and report the `version` in that root's `.claude-plugin/plugin.json` as the
-**running** version, with the tool, PID and plugin root. The version under the current `CLAUDE_PLUGIN_ROOT` describes
-the installed copy, not necessarily the running one. If the live path can't be
-established, say the running version is unknown.
+command line (`ps -p <pid> -o args=`), identify the executable path and resolve any
+symlink. A bundled tool
+under `dist/` belongs to the plugin root one directory above; read its
+`.claude-plugin/plugin.json` version. An npm launcher under `bin/` belongs to the
+package root one directory above; read its `package.json` version. Report the
+**running** version with the tool, PID and executable path. The current launcher on
+`PATH` may point to a newer installation. If the live path can't be established,
+say the running version is unknown.
 
 ## A station looks staffed but nothing moves
 

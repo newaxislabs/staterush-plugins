@@ -6,8 +6,7 @@ description: Doctor for the StateRush plugin. Use when the person asks whether S
 # StateRush doctor
 
 **Read the client guide first.** The plugin ships StateRush's client guide at
-`$CLAUDE_PLUGIN_ROOT/client-guide.md` (the plugin root, two levels above this skill's
-folder). Read it once per session before working with StateRush: it says what the board
+`../../client-guide.md` (relative to this skill's folder). Read it once per session before working with StateRush: it says what the board
 tools do and how to use them well, and it may be the only copy you get, because the
 hosted server's own instructions don't always reach Claude Code.
 
@@ -103,11 +102,12 @@ Only when the person wants to run agents unattended on their own machine (see th
 `staterush-line` skill). Check each and report what is missing:
 
 - **Node 20 or newer:** `node --version`.
-- **The fleet tools are present** in the installed plugin: `ls "$CLAUDE_PLUGIN_ROOT/dist"`
-  should list `staterush-dispatch.mjs`, `staterush-run-scripts.mjs`, `staterush-relay.mjs`,
-  `staterush-spy.mjs` and `staterush-watch.mjs`. `node "$CLAUDE_PLUGIN_ROOT/dist/staterush-dispatch.mjs" --help`
-  should print its usage. If they are absent, the plugin is older than 0.3.0: run
-  `claude plugin update staterush@staterush`. Do not substitute other tools.
+- **The fleet tools are available:** `staterush-dispatch --help` should print its
+  usage. Check `command -v staterush-dispatch`, `command -v staterush-run-scripts`,
+  `command -v staterush-relay`, `command -v staterush-spy` and
+  `command -v staterush-watch` for installed launchers on `PATH`. If one is absent,
+  install the StateRush client launchers on `PATH`; updating the Claude plugin alone
+  does not add shell launchers. Do not substitute other tools.
 - **A lane credential:** a workspace API key issued by a workspace owner in the web app,
   stored on this machine for the lane (never the person's own sign-in, never pasted into
   chat). Check that a credential is configured without printing it.
@@ -136,3 +136,7 @@ Only when the person wants to run agents unattended on their own machine (see th
 
 Never ask the person to paste a token, key or password into the chat, and never write
 one into a file or a command line.
+
+## Local agent station
+
+On macOS, use `staterush-station up <board> [column] [--key-file path] [--root path]` to prepare this machine's authorized managed runbook lane. The key file contains one line and is passed to `staterush-login` on stdin. A saved machine login can be reused. The user agent plist lives in `~/Library/LaunchAgents`, so it loads at login. `staterush-station down <board>` disables it and drains workers; `staterush-station status <board>` shows lane state, live PID, running bundle version when reported by that PID, and last spawn availability. An unreadable board, invalid login, unsafe authorized-boards file or staffing driver that does not name this host makes up refuse before launchd starts.
