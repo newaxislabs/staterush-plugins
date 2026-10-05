@@ -7,4 +7,12 @@ claude plugin install staterush@staterush
 
 Then run `/mcp` in Claude Code, choose **staterush**, and sign in with your StateRush account.
 The plugin connects to the hosted StateRush board tools at https://app.staterush.com/mcp; it holds no keys.
-Ask Claude to use the `staterush-doctor` skill if sign-in or workspace selection doesn't work.
+
+The plugin's skills, which Claude uses when they apply:
+
+- `staterush-doctor`: sign-in (including over SSH), workspace selection, refusal codes, fleet prerequisites.
+- `staterush-line`: what a line is, the fleet tools that run one, and why a station isn't moving.
+- `staterush-coordinator`: supervising a line: answering workers, selecting work, approvals, filing cards.
+
+`plugins/staterush/client-guide.md` is the short guide the StateRush server gives Claude on connecting; the skills carry the detail.
+The fleet tools themselves ship in a later plugin release.
