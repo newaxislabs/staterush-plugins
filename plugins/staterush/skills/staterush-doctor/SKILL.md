@@ -96,6 +96,10 @@ usually names the card, column or holder involved.
 | `BOARD_WRITE_RETRYABLE` | a transient write conflict | retry once |
 | `result-too-large` | the read was too big | use `limit` and `cursor`, or a narrower `section` |
 
+For predecessor E41 and successor E42, set E42's `delivery_order: ["E41", "E42"]`; E42 is the successor card's own ref at the end of the array.
+Entries before the card's own ref must reach a delivered column before the successor proceeds. Selection skips a successor with an unmet predecessor; a named claim receives `waiting-on-predecessor`.
+A free-text blocked-by note or field has no scheduling effect. Use `delivery_order` for executable dependencies.
+
 ## 4. Before running a line: fleet prerequisites
 
 Only when the person wants to run agents unattended on their own machine (see the
@@ -113,6 +117,31 @@ Only when the person wants to run agents unattended on their own machine (see th
   chat). Check that a credential is configured without printing it.
 - **The board's own station scripts and runbooks** are checked out from the board
   owner's repository, if the board has script stations.
+
+## Interactive Claude Remote Control takeover
+
+When a person wants to continue a parked Claude conversation from another device,
+check their Claude setup separately from StateRush sign-in:
+
+- They need a Pro, Max, Team, or Enterprise subscription and a signed-in Claude account
+  in Claude Code (`claude`, then `/login` if needed). API keys do not qualify. On Team
+  and Enterprise, an owner must enable Remote Control for the organization.
+- On the machine holding the conversation, in its project directory, run
+  `claude --resume <session-id> --remote-control` to resume it interactively with
+  Remote Control enabled. If the conversation is already open in interactive Claude,
+  run `/remote-control` there. Accept the one-time confirmation if prompted.
+- Run `/remote-control` again to show Claude's status panel with its URL and QR code,
+  or open the session list at claude.ai/code or in the Claude app. Only a person with
+  access to that same Claude account can open the session; the URL does not give
+  arbitrary StateRush viewers access. The local session process and machine must
+  remain running. Remote messages can use that machine's filesystem and tools,
+  so treat access to the Claude account and device accordingly.
+- Unattended Claude workers keep Remote Control off and get no Remote Control flag;
+  Codex has no Remote Control support here. The current CLI has no documented machine-readable Remote Control URL for an unattended print-mode worker, so the
+  client does not report a Remote Control link on an authenticated visit. Never
+  paste the link into a card note or worker output, logs, receipts, telemetry, or
+  transcripts. See [Claude's Remote Control guide](https://code.claude.com/docs/en/remote-control)
+  for current eligibility and troubleshooting.
 
 ## Things that look like faults but are not
 
@@ -136,9 +165,26 @@ Only when the person wants to run agents unattended on their own machine (see th
   verdict its column offers for that (often `abandoned`).
 - The hosted `select` tool only lists the cards waiting at a station. To take one, use
   `claim` with that station and the card.
-- To file a card, use `add` (title, column, and optionally `ref`, `class` and `fields`).
-  To move it to another lane, use `reclassify` with a `class` and a `why`. To label it,
-  use `set_theme` with a theme the board declares. Leave `theme` out to clear it.
+- Declared classes are priority bands in a board's queue: expedite is offered ahead of standard
+  when both cards are eligible in the same column. To file a card,
+  use `add` (title, column, and optionally `ref`, `class` and `fields`); set its `class`
+  to one the board declares. To change a card's class, use `reclassify` with the new
+  `class` and a `why` reason. To label it, use `set_theme` with a theme the board
+  declares. Leave `theme` out to clear it.
+- Group-by-field views, such as grouping cards by a `requester` field, depend on
+  future engine E489 work and are not yet available in the client. Card fields can
+  record the value today; a class changes queue priority, not the view.
+- To inspect theme declarations, use `board` and read its `themes`. A board definition
+  can declare `themes: [{ name: "development", label: "Development", color: "#2656A8" }]`.
+  Call `set_theme` with the exact declared name `development`, rather than the label.
+  `UNDECLARED_THEME` refuses a theme absent from the board declaration.
+- To declare themes now, an owner can use `staterush-owner` to edit the exported `themes`:
+  run `staterush-owner export BOARD --output board.json`,
+  edit `board.themes`, preview with `staterush-owner apply board.json`, then commit with
+  `staterush-owner apply board.json --apply`. Apply checks the exported engine revision.
+  Alternatively, use the engine's GraphQL `reshape` mutation, previewing with
+  `dryRun: true` before applying with `dryRun: false`.
+  If hosted MCP theme-management tools are available on the connected engine, use them to list or declare themes.
 - To make a board, call `templates`, pick the template and choices that fit what the person
   asked for, confirm the name with them, then `create_board`. `templates` needs
   `boards.read`, so a viewer can discover templates. `create_board` needs
@@ -147,6 +193,44 @@ Only when the person wants to run agents unattended on their own machine (see th
   without permission can ask an owner or admin to create the board.
 - The hosted server has no transcript, watch or supervisor tools. Those belong to the
   fleet tooling that runs a line (see `staterush-line`).
+- Session viewer messaging is authorized by the engine for the signed-in person.
+  The worker host accepts only the exact current session and claim with local
+  worker evidence. A message to a parked question resumes the held claim through
+  the dispatcher. A live harness needs an injection channel; without one, the
+  viewer receives a cannot-deliver reason. The reply appears in that session's
+  transcript when the host's outbound spy is running.
+
+## Checking staffing filters
+
+`selects` filters card fields by `key` and `value`; `matches` expresses typed field,
+class, or theme predicates. Use `attribute: "field"` with a field `key`; class and
+theme need no key. A match takes `equalTo` for one value or `anyOf` for several.
+These JSON fragments show three separate rules' predicates:
+
+```json
+[
+  {"selects": [{"key": "stage", "value": "development"}],
+   "matches": [{"attribute": "field", "key": "requester", "equalTo": "priya"}]},
+  {"matches": [{"attribute": "class", "anyOf": ["standard", "expedite"]}]},
+  {"matches": [{"attribute": "theme", "equalTo": "feature"}]}
+]
+```
+
+Both `selects` and `matches` narrow the eligible cards. A development-card-only
+rule can use `"selects": [{"key": "stage", "value": "development"}]` by itself;
+the first fragment also requires the `requester` field to be `priya`. The engine
+selects the rule for a card: **the last matching rule wins** in the column's
+ordered staffing array. The dispatcher follows that engine-selected rule.
+
+Inspect the live rules with `staterush-owner export BOARD --output board.json`.
+Edit the exported column's `staffing` array, preview the change with
+`staterush-owner apply board.json` (dry run), then publish with
+`staterush-owner apply board.json --apply`. The export has an engine revision
+guard, so re-export if it becomes stale. A read-only GraphQL inspection is
+`board(name: $board) { columns { name staffing { selects { key value } matches { attribute key equalTo anyOf } } } }`.
+If the engine supports hosted staffing preview and publish, use its
+`preview_staffing` and `publish_staffing` tools; check whether they are listed
+before offering those steps. There is no client-side staffing editor.
 
 Never ask the person to paste a token, key or password into the chat, and never write
 one into a file or a command line.
