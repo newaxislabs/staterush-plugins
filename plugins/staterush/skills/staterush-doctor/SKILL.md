@@ -99,6 +99,7 @@ usually names the card, column or holder involved.
 For predecessor E41 and successor E42, set E42's `delivery_order: ["E41", "E42"]`; E42 is the successor card's own ref at the end of the array.
 Entries before the card's own ref must reach a delivered column before the successor proceeds. Selection skips a successor with an unmet predecessor; a named claim receives `waiting-on-predecessor`.
 A free-text blocked-by note or field has no scheduling effect. Use `delivery_order` for executable dependencies.
+Until engine E510 ships, `delivery_order` holds refs on the card's own board only: never name another board's card in it. Record a cross-board dependency in a note, and say it is not enforced.
 
 ## 4. Before running a line: fleet prerequisites
 
@@ -197,7 +198,24 @@ check their Claude setup separately from StateRush sign-in:
   `staterush-owner apply board.json --apply`. Apply checks the exported engine revision.
   Alternatively, use the engine's GraphQL `reshape` mutation, previewing with
   `dryRun: true` before applying with `dryRun: false`.
-  If hosted MCP theme-management tools are available on the connected engine, use them to list or declare themes.
+- Hosted MCP theme tools are available when the connected engine supports them (check
+  `tools/list`); they need `boards.shape`. `declare_theme` (board, name, label, color) adds a
+  declaration; `relabel_theme` (board, name, label) changes only its label; `remove_theme`
+  (board, name) removes an unused declaration, one no card carries.
+- Partial board reshape (owners and admins): read `board` with `view: columns` and note its
+  `shapeRevision`. Call `preview_board_reshape` with `board`, `expectedRevision` set to that
+  `shapeRevision`, and a `proposal`; it changes nothing and returns the diff and the affected
+  cards. After the person says yes, call `apply_board_reshape` with the same proposal and the
+  same revision. A stale revision is refused at apply when the shape changed after the read:
+  read and preview again.
+- In a partial reshape, a proposal key you omit keeps its existing declarations and order, and
+  a field you omit from an update keeps its current value. `classes`, `columns`, `themes` and
+  `sections` each take `add` (whole declarations), `update` (`{ name, set }`) and `remove`
+  (existing names). An explicit null clears a nullable field and remove deletes a
+  declaration; neither is the same as omitting it.
+- Declare classes with the proposal's `classes` add, update or remove, for example
+  `{ classes: { add: [{ name: "urgent", rank: 1 }] } }` in `preview_board_reshape`, then
+  `apply_board_reshape`.
 - To make a board, call `templates`, pick the template and choices that fit what the person
   asked for, confirm the name with them, then `create_board`. `templates` needs
   `boards.read`, so a viewer can discover templates. `create_board` needs
@@ -249,6 +267,8 @@ Never ask the person to paste a token, key or password into the chat, and never 
 one into a file or a command line.
 
 ## Local agent station
+
+To set up a dispatcher for one board from scratch, suggest `PULLBOARD_ENGINE=<engine url> staterush-setup`. It signs the person in with one device code, offers their workspaces and that workspace's boards, issues or reuses the workspace dispatcher key (issuing needs `tenant.admin`), runs `staterush-station up` with its consent prompt, and reports an unarmed dispatcher dry run. If it stops, its last line names the reason: a declined consent, a missing permission, an unreadable board, or no managed rule whose driver names this host.
 
 For each workspace and board pair, `staterush-station up` asks for y/N consent after validating the saved login, board access, and eligible managed rule. It names the effective workspace ID and board before saving consent or starting a lane. A legacy board-name file grants no consent; declining leaves it unchanged. Removing a scoped pair revokes future dispatcher and script-runner claims for that pair, even if another workspace still consents to the same board.
 
