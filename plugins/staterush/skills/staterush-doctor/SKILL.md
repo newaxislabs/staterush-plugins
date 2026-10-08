@@ -120,6 +120,19 @@ Only when the person wants to run agents unattended on their own machine (see th
 
 ## Interactive Claude Remote Control takeover
 
+For a person who wants parked question popups on their own laptop, use the
+installed watcher opt-in described in `docs/staterush-watch.md`: register the
+person with `--local-questions`, exact `--board` and `--worker` values, and
+optional `--station` and `--host` filters. Set
+`PULLBOARD_WATCH_TERMINAL_CONFIG` on that laptop to a JSON file with its
+desktop terminal, provider executables, notification command, and each worker
+host's dispatch receipt directory. A remote worker also needs a batch-capable
+SSH mapping and readable receipts on that host. Check `staterush-watch inspect
+--id ID` for the saved scope, then verify one real open parked question opens
+the exact session once; restart the watcher and verify it does not reopen. If
+the desktop is unavailable, check the notification for a copyable resume
+command and the card for its held claim and still-open question.
+
 When a person wants to continue a parked Claude conversation from another device,
 check their Claude setup separately from StateRush sign-in:
 
@@ -236,6 +249,8 @@ Never ask the person to paste a token, key or password into the chat, and never 
 one into a file or a command line.
 
 ## Local agent station
+
+For each workspace and board pair, `staterush-station up` asks for y/N consent after validating the saved login, board access, and eligible managed rule. It names the effective workspace ID and board before saving consent or starting a lane. A legacy board-name file grants no consent; declining leaves it unchanged. Removing a scoped pair revokes future dispatcher and script-runner claims for that pair, even if another workspace still consents to the same board.
 
 On macOS, use `staterush-station up <board> [column] [--key-file path] [--root path]` to prepare this machine's authorized managed runbook lane. The key file contains one line and is passed to `staterush-login` on stdin. A saved machine login can be reused. The user agent plist lives in `~/Library/LaunchAgents`, so it loads at login. `staterush-station down <board>` disables it and drains workers; `staterush-station status <board>` shows lane state, live PID, running bundle version when reported by that PID, and last spawn availability. An unreadable board, invalid login, unsafe authorized-boards file or staffing driver that does not name this host makes up refuse before launchd starts.
 

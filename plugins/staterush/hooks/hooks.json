@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "PostToolUse": [{ "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/dist/staterush-viewer-hook.mjs\"" }] }],
+    "Stop": [{ "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/dist/staterush-viewer-hook.mjs\"" }] }]
+  }
+}
