@@ -118,6 +118,9 @@ Only when the person wants to run agents unattended on their own machine (see th
   chat). Check that a credential is configured without printing it.
 - **The board's own station scripts and runbooks** are checked out from the board
   owner's repository, if the board has script stations.
+- **FAIL escalation:** if `PULLBOARD_WATCH_PERSON_COMMAND` is absent where a watcher
+  runs, unanswered questions have no external person notification. Configure the
+  command and inspect the watcher again before treating it as attended.
 
 ## Interactive Claude Remote Control takeover
 
