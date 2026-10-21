@@ -15,6 +15,26 @@ holds no keys. The person signs in with their own StateRush account through Clau
 Code's browser sign-in, and the board records what they do under their own name.
 Hosted MCP use does not require local Node. If the person wants local tools, Node 20 or newer is required; check that only when helping with those tools.
 
+For a newly invited person, follow this path in order. An invitation sends no email
+and has no acceptance link. In Claude Code, run
+`/plugin marketplace add newaxislabs/staterush-plugins`, then
+`/plugin install staterush@staterush`. Restart Claude Code after installation.
+Open `/mcp`, choose `staterush` under Built-in MCPs, and select Authenticate.
+Sign in with the invited verified email. The first authenticated `/mcp` request
+accepts a matching pending invitation, and the workspace appears. If already signed in
+when invited, use `/mcp` → `staterush` → Reconnect (or Authenticate)
+to sign in again with that email. Call `workspaces`, pick a listed board, then call `board` with
+its name and `view: "columns"` to confirm interactive access. If `workspaces`
+returns an empty list, check that the person signed in with the exact invited email
+and ask the inviter or workspace owner to verify the invitation. If
+`/mcp` shows a refusal, read its reason and follow its web URL.
+
+An optional local lane for unattended workers comes after interactive board
+access. It uses a separate workspace-issued machine credential (a workspace
+API key), never the person's browser sign-in. Install the client launchers on
+`PATH` separately from the plugin, then run `staterush-setup` for guided lane
+setup.
+
 Work through the steps in order and stop at the first one that explains the problem.
 Tell the person what you found in plain words, and say what they need to do next.
 
@@ -64,11 +84,11 @@ Read the `workspaces` result.
 
   Each new server signs in once, the same way as step 1. Calls go to whichever server's
   tools you use, so name the workspace when you act.
-- **Only access `invited`:** the person has been invited but hasn't joined yet. They
-  accept the invitation by signing in at https://app.staterush.com, then run `/mcp`,
-  choose `staterush` and Reconnect.
-- **An empty list:** they belong to no workspace yet. They create one at
-  https://app.staterush.com, or ask a workspace owner to invite them.
+- **Only access `invited`:** sign in again with the invited verified email through
+  `/mcp` → `staterush` → Reconnect (or Authenticate), then call `workspaces` again.
+- **An empty list:** check that the person signed in with the exact invited email
+  and ask the inviter or workspace owner to verify the invitation. Reconnect with
+  that verified email.
 
 ## 3. Can it read a board?
 
@@ -112,7 +132,7 @@ Only when the person wants to run agents unattended on their own machine (see th
   usage. Check `command -v staterush-dispatch`, `command -v staterush-run-scripts`,
   `command -v staterush-relay`, `command -v staterush-spy` and
   `command -v staterush-watch` for installed launchers on `PATH`. If one is absent,
-  install the StateRush client launchers on `PATH`; updating the Claude plugin alone
+  run the `staterush-setup` skill to install the StateRush client launchers; updating the Claude plugin alone
   does not add shell launchers. Do not substitute other tools.
 - **A lane credential:** a workspace API key issued by a workspace owner in the web app,
   stored on this machine for the lane (never the person's own sign-in, never pasted into
@@ -126,7 +146,7 @@ Only when the person wants to run agents unattended on their own machine (see th
 ## Interactive Claude Remote Control takeover
 
 For a person who wants parked question popups on their own laptop, use the
-installed watcher opt-in described in `docs/staterush-watch.md`: register the
+installed watcher opt-in described in the watcher section of `README.md`: register the
 person with `--local-questions`, exact `--board` and `--worker` values, and
 optional `--station` and `--host` filters. Set
 `PULLBOARD_WATCH_TERMINAL_CONFIG` on that laptop to a JSON file with its

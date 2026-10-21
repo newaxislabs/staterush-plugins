@@ -13,7 +13,7 @@ hosted server's own instructions don't always reach Claude Code.
 ## The fleet tools ship as built bundles
 
 The plugin carries each fleet tool as a self-contained bundle. For shell commands,
-install the StateRush client launchers on `PATH` and invoke them as `staterush-*`.
+run the `staterush-setup` skill once to install user launchers, then invoke them as `staterush-*` from a fresh shell.
 Use `staterush-dispatch --help` to check the installation before starting a lane.
 The Claude plugin alone does not put launchers on a session shell's `PATH`.
 Never improvise a dispatcher, a polling loop, a cron job that claims cards,
@@ -55,7 +55,7 @@ service supervisor (systemd, launchd, a SysV service, or cron plus a keepalive).
 |---|---|---|
 | dispatcher | `staterush-dispatch <board> loop` | starts an agent worker per card an agent station should take; renews leases and records each worker's result |
 | script runner | `staterush-run-scripts <board>` | runs the board's script stations; exit code is the verdict |
-| relay | `staterush-relay start` | optional: receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush. Without it workers run unobserved ("RELAY DOWN") but still work |
+| relay | `staterush-relay start` | required before dispatch: receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush. The dispatcher refuses to spawn workers while the relay is down |
 | spy | `staterush-spy` | streams a running worker's transcript to the web app when someone opens it |
 | watcher | `staterush-watch run` | wakes a supervising Claude session when a person is needed (see `staterush-coordinator`) |
 | keepalive | the person's supervisor or cron job | restarts a lane that has died; not a StateRush binary |
