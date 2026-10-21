@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "PostToolUse": [{ "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/dist/staterush-viewer-hook.mjs\"" }] }],
-    "Stop": [{ "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/dist/staterush-viewer-hook.mjs\"" }] }]
+    "PostToolUse": [{ "hooks": [{ "type": "command", "command": "if command -v node >/dev/null 2>&1; then version=$(node --version 2>/dev/null) || exit 0; major=${version#v}; major=${major%%.*}; case $major in ''|*[!0-9]*) exit 0;; esac; if [ \"$major\" -ge 20 ]; then node \"${CLAUDE_PLUGIN_ROOT}/dist/staterush-viewer-hook.mjs\"; fi; fi" }] }],
+    "Stop": [{ "hooks": [{ "type": "command", "command": "if command -v node >/dev/null 2>&1; then version=$(node --version 2>/dev/null) || exit 0; major=${version#v}; major=${major%%.*}; case $major in ''|*[!0-9]*) exit 0;; esac; if [ \"$major\" -ge 20 ]; then node \"${CLAUDE_PLUGIN_ROOT}/dist/staterush-viewer-hook.mjs\"; fi; fi" }] }]
   }
 }

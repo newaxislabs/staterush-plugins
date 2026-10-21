@@ -13,6 +13,7 @@ hosted server's own instructions don't always reach Claude Code.
 The plugin declares one MCP server, `staterush`, at `https://app.staterush.com/mcp`. It
 holds no keys. The person signs in with their own StateRush account through Claude
 Code's browser sign-in, and the board records what they do under their own name.
+Hosted MCP use does not require local Node. If the person wants local tools, Node 20 or newer is required; check that only when helping with those tools.
 
 Work through the steps in order and stop at the first one that explains the problem.
 Tell the person what you found in plain words, and say what they need to do next.
