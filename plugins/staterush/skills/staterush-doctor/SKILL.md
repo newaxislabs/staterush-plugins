@@ -292,6 +292,8 @@ one into a file or a command line.
 
 ## Local agent station
 
+For a new board, create or reshape the board, then publish a managed runbook rule with a nonempty runbook and a driver eligible for this host (empty, `any`, or this host's name), then run `staterush-station up`. Inspect the board's staffing with `staterush-owner export BOARD --output board.json`; edit its column's `staffing` array, preview with `staterush-owner apply board.json`, and publish with `staterush-owner apply board.json --apply`. If no eligible rule exists, publish one before retrying station up.
+
 To set up a dispatcher for one board from scratch, suggest `PULLBOARD_ENGINE=<engine url> staterush-setup`. It signs the person in with one device code, offers their workspaces and that workspace's boards, issues or reuses the workspace dispatcher key (issuing needs `tenant.admin`), runs `staterush-station up` with its consent prompt, and reports an unarmed dispatcher dry run. If it stops, its last line names the reason: a declined consent, a missing permission, an unreadable board, or no managed rule whose driver names this host.
 
 For each workspace and board pair, `staterush-station up` asks for y/N consent after validating the saved login, board access, and eligible managed rule. It names the effective workspace ID and board before saving consent or starting a lane. A legacy board-name file grants no consent; declining leaves it unchanged. Removing a scoped pair revokes future dispatcher and script-runner claims for that pair, even if another workspace still consents to the same board.

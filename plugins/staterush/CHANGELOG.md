@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.35 (2026-10-23)
+
+any finished worker session whose file is on this machine opens in a terminal without claiming the card, a lane's spy reports engine refusals clearly, setup starts and supervises the relay and spy, lanes keep a log and status shows the live process, stale transcript loops stop, timestamped spy logs, tests leave no processes behind, station up explains staffing first (P0-283-2, P0-283-4, P0-292, P0-293, P0-294, P0-295, P0-295-3, P0-296-2)
+
 ## v0.3.34 (2026-10-22)
 
 a lane starts workers even when no relay is running (warning UNOBSERVED with the exact relay start command, as before 10-08), relay hints name the port the lane really uses, Terminal.app takeover and hand-back on macOS, station commands on macOS (P0-282-2, P0-290-3, P0-291)
