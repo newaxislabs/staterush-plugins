@@ -70,11 +70,13 @@ configuration outside the plugin directory so plugin updates don't erase it.
 
 When telemetry is enabled and a relay is configured, the dispatcher checks that
 the configured relay answers before each worker starts. If it is unreachable,
-the dispatcher refuses to spawn the worker; start or recover the relay first.
-Setting `PULLBOARD_TELEMETRY=off` explicitly permits workers to start deliberately
-unobserved. If the relay answers but its delivery route is unhealthy, the
-dispatcher may still spawn the worker with a warning; repair the route so its
-telemetry reaches StateRush.
+the worker starts without telemetry and the lane reports UNOBSERVED with a relay
+start command for the selected host and port. Set `PULLBOARD_REQUIRE_RELAY=1` in
+the lane environment to refuse worker spawning until the relay answers. If the
+relay answers but its delivery route is unhealthy, the dispatcher may still
+spawn the worker with a warning; repair the route so its telemetry reaches
+StateRush.
+Setting `PULLBOARD_TELEMETRY=off` deliberately starts workers without telemetry.
 
 ## Credentials
 

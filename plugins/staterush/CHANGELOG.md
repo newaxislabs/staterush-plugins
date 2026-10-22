@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.34 (2026-10-22)
+
+a lane starts workers even when no relay is running (warning UNOBSERVED with the exact relay start command, as before 10-08), relay hints name the port the lane really uses, Terminal.app takeover and hand-back on macOS, station commands on macOS (P0-282-2, P0-290-3, P0-291)
+
 ## v0.3.33 (2026-10-22)
 
 Open in terminal works on a freshly set-up lane (it starts the visit spy), the relay needs no hand configuration, cron lanes install with a short entry, re-running station up uses the saved login, lanes upgrade themselves with rollback, workspace key tools, more of the macOS suite passes (P0-278-2, P0-285, P0-287, P0-288, P0-288-2, P0-289, P0-290, P0-290-2)
