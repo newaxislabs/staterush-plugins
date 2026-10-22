@@ -55,7 +55,7 @@ service supervisor (systemd, launchd, a SysV service, or cron plus a keepalive).
 |---|---|---|
 | dispatcher | `staterush-dispatch <board> loop` | starts an agent worker per card an agent station should take; renews leases and records each worker's result |
 | script runner | `staterush-run-scripts <board>` | runs the board's script stations; exit code is the verdict |
-| relay | `staterush-relay start` | required before dispatch: receives workers' telemetry on loopback, redacts it, buffers to disk, forwards to StateRush. The dispatcher refuses to spawn workers while the relay is down |
+| relay | `staterush-relay start` | receives workers' telemetry on loopback, redacts it, buffers to disk, and forwards it to StateRush |
 | spy | `staterush-spy` | streams a running worker's transcript to the web app when someone opens it |
 | watcher | `staterush-watch run` | wakes a supervising Claude session when a person is needed (see `staterush-coordinator`) |
 | keepalive | the person's supervisor or cron job | restarts a lane that has died; not a StateRush binary |
@@ -67,6 +67,14 @@ All require Node 20 or newer. The client tools also include `staterush-login`,
 supervisor with an absolute path to the installed launcher from
 `command -v staterush-dispatch` (or the corresponding tool). Keep service
 configuration outside the plugin directory so plugin updates don't erase it.
+
+When telemetry is enabled and a relay is configured, the dispatcher checks that
+the configured relay answers before each worker starts. If it is unreachable,
+the dispatcher refuses to spawn the worker; start or recover the relay first.
+Setting `PULLBOARD_TELEMETRY=off` explicitly permits workers to start deliberately
+unobserved. If the relay answers but its delivery route is unhealthy, the
+dispatcher may still spawn the worker with a warning; repair the route so its
+telemetry reaches StateRush.
 
 ## Credentials
 

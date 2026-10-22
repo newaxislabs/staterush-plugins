@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.32 (2026-10-22)
+
+works on macOS without /proc, setup's lane backs off and says why when it can't start a worker, Open in terminal brings an already-open session back, finishing from a foreground session records the verdict or fails loudly, setup names the workspace and board, read_staffing returns script outcomes (P0-275, P0-275-3, P0-282, P0-283, P0-283-3, P0-283-5, P0-283-5-2, P0-284, P0-286)
+
 ## v0.3.31 (2026-10-22)
 
 local tools run straight after install with no PATH setup, lanes run from a staged release copy, helpers report machine and version for the admin Helpers page, a lapsed question-parked worker can be opened in a terminal, plugin CHANGELOG, true onboarding guide (P0-275-2, P0-276, P0-278, P0-280, P0-280-2, P0-281)
