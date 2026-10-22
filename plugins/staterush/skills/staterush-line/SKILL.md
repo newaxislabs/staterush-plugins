@@ -89,7 +89,10 @@ run unattended, and their actions should be recorded as the lane, not as the per
   to. Only if it says StateRush could not tell, set `PULLBOARD_TENANT` to the workspace
   id, which a workspace owner can give the person. `PULLBOARD_API_KEY` and `PULLBOARD_TENANT`
   in a lane's environment override it.
-- The relay uses its own ingest credential, `PULLBOARD_INGEST_API_KEY`.
+- The relay uses the saved machine login for native ingest. It derives the ingest
+  destination from the selected engine URL's origin and sends the saved workspace
+  key; ordinary relay setup needs no separate ingest key. Set
+  `PULLBOARD_INGEST_ENDPOINT` only to override that destination.
 - Never print a key, never put one on a command line or in the plugin directory, and
   never ask the person to paste one into the chat. Check that a credential exists by
   file mode and key *names*, not values.

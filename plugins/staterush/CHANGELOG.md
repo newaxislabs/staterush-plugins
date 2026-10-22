@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.33 (2026-10-22)
+
+Open in terminal works on a freshly set-up lane (it starts the visit spy), the relay needs no hand configuration, cron lanes install with a short entry, re-running station up uses the saved login, lanes upgrade themselves with rollback, workspace key tools, more of the macOS suite passes (P0-278-2, P0-285, P0-287, P0-288, P0-288-2, P0-289, P0-290, P0-290-2)
+
 ## v0.3.32 (2026-10-22)
 
 works on macOS without /proc, setup's lane backs off and says why when it can't start a worker, Open in terminal brings an already-open session back, finishing from a foreground session records the verdict or fails loudly, setup names the workspace and board, read_staffing returns script outcomes (P0-275, P0-275-3, P0-282, P0-283, P0-283-3, P0-283-5, P0-283-5-2, P0-284, P0-286)
