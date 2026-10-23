@@ -30,6 +30,12 @@ authoritative answer, not permission to improvise another route.
 - Retire only a designated obsolete card with `staterush_retire` and a concrete reason. Check the
   returned result. Do not name a destination; routing remains the board's decision.
 
+## Card names
+
+Use `staterush_retitle` with `{card, title, why}` to edit a card's title on the
+configured board while keeping its ref. Use `staterush_rename` with `{card, ref}`
+to change the ref. Check the engine's answer after either call.
+
 ## Line health
 
 Call `staterush_line_health` to explain the line from the engine's own evidence: `needsPerson` says which cards need a person and why (a station whose cards are asking is not a starved station, and a starved station's `suppression` names what is holding it), alongside supervision coverage, supervisors, cards no staffing rule matches, worker absence and the telemetry delivery queue. Report what the engine says; do not re-derive it.

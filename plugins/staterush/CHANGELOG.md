@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.36 (2026-10-23)
+
+a lane updates itself and gains new services, setup proves transcripts reach the card and fails loudly with the real cause, each workspace on a shared machine gets its own relay port, a dispatcher releases claims whose worker died instead of renewing them, the spy reconnects after an engine error, a dispatcher whose host consent is withdrawn pauses and stays stoppable, the watcher survives a deleted card, retitle from Claude Code, Bedrock lanes (provider chosen per machine, settings reach workers, unattended credentials, rotating key files, terminal takeover on Bedrock), cloud-worker groundwork (AgentCore dispatcher claim/invoke, park and resume snapshots), status and doctor warn about missing sessions (P0-295-2, FB-P0-295-1, P0-296, P0-298, P0-299, P0-300, P0-301, P0-302, P0-303, P0-303-2, P0-303-3, P0-304, P0-304-2, P0-305, P0-306, P0-306-2, P0-307-3, P0-307-3-2, P0-308, P0-310, P0-311)
+
 ## v0.3.35 (2026-10-23)
 
 any finished worker session whose file is on this machine opens in a terminal without claiming the card, a lane's spy reports engine refusals clearly, setup starts and supervises the relay and spy, lanes keep a log and status shows the live process, stale transcript loops stop, timestamped spy logs, tests leave no processes behind, station up explains staffing first (P0-283-2, P0-283-4, P0-292, P0-293, P0-294, P0-295, P0-295-3, P0-296-2)
