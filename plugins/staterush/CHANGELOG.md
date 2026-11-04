@@ -1,28 +1,8 @@
 # Changelog
 
-## v0.3.36 (2026-10-23)
+## v0.3.38 (2026-11-05)
 
-a lane updates itself and gains new services, setup proves transcripts reach the card and fails loudly with the real cause, each workspace on a shared machine gets its own relay port, a dispatcher releases claims whose worker died instead of renewing them, the spy reconnects after an engine error, a dispatcher whose host consent is withdrawn pauses and stays stoppable, the watcher survives a deleted card, retitle from Claude Code, Bedrock lanes (provider chosen per machine, settings reach workers, unattended credentials, rotating key files, terminal takeover on Bedrock), cloud-worker groundwork (AgentCore dispatcher claim/invoke, park and resume snapshots), status and doctor warn about missing sessions (P0-295-2, FB-P0-295-1, P0-296, P0-298, P0-299, P0-300, P0-301, P0-302, P0-303, P0-303-2, P0-303-3, P0-304, P0-304-2, P0-305, P0-306, P0-306-2, P0-307-3, P0-307-3-2, P0-308, P0-310, P0-311)
-
-## v0.3.35 (2026-10-23)
-
-any finished worker session whose file is on this machine opens in a terminal without claiming the card, a lane's spy reports engine refusals clearly, setup starts and supervises the relay and spy, lanes keep a log and status shows the live process, stale transcript loops stop, timestamped spy logs, tests leave no processes behind, station up explains staffing first (P0-283-2, P0-283-4, P0-292, P0-293, P0-294, P0-295, P0-295-3, P0-296-2)
-
-## v0.3.34 (2026-10-22)
-
-a lane starts workers even when no relay is running (warning UNOBSERVED with the exact relay start command, as before 10-08), relay hints name the port the lane really uses, Terminal.app takeover and hand-back on macOS, station commands on macOS (P0-282-2, P0-290-3, P0-291)
-
-## v0.3.33 (2026-10-22)
-
-Open in terminal works on a freshly set-up lane (it starts the visit spy), the relay needs no hand configuration, cron lanes install with a short entry, re-running station up uses the saved login, lanes upgrade themselves with rollback, workspace key tools, more of the macOS suite passes (P0-278-2, P0-285, P0-287, P0-288, P0-288-2, P0-289, P0-290, P0-290-2)
-
-## v0.3.32 (2026-10-22)
-
-works on macOS without /proc, setup's lane backs off and says why when it can't start a worker, Open in terminal brings an already-open session back, finishing from a foreground session records the verdict or fails loudly, setup names the workspace and board, read_staffing returns script outcomes (P0-275, P0-275-3, P0-282, P0-283, P0-283-3, P0-283-5, P0-283-5-2, P0-284, P0-286)
-
-## v0.3.31 (2026-10-22)
-
-local tools run straight after install with no PATH setup, lanes run from a staged release copy, helpers report machine and version for the admin Helpers page, a lapsed question-parked worker can be opened in a terminal, plugin CHANGELOG, true onboarding guide (P0-275-2, P0-276, P0-278, P0-280, P0-280-2, P0-281)
+feat: expose card assignees in CLI and MCP; Select claim identity in CLI claim result; Add CLI claim command with named card selection; Hold new dispatcher claims while a selected host marker is fresh; Bound outbound spy reconnect failures and diagnose attempts; Bound AgentCore input listening to single scheduled invocation; Verify AgentCore runtime shutdown reaches worker; Report AgentCore shell stopped on worker shutdown; fix: report Slack connected only for CONNECTED status; Keep AgentCore input listener across scheduled dispatcher handoffs; WIP: report live AgentCore shell status and select input mode; Expose engine card cancellation through board client CLI and MCP; and 266 more changes.
 
 ## v0.3.30 (2026-10-22)
 
