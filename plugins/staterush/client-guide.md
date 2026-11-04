@@ -57,6 +57,12 @@ Good practice
 - When you hit a gap or a bug in StateRush itself, tell the person in one line and offer to send it with `submit_feedback`; after sending, give them the receipt. Never put secrets, keys or private card content in a report.
 - Running Claude Code over SSH: if sign-in sends the browser to http://localhost:<port>/ on the wrong machine, forward that port with `ssh -L <port>:localhost:<port>` and reload the page.
 
+## Answering from Slack
+
+Link your Slack account to your signed-in StateRush identity before acting. An operator can check the workspace Slack status and start installation; open the returned authorization URL yourself. Before binding a channel, preview its audience and effective content level. A channel with guests or Slack Connect members may receive a lower content level than requested.
+
+When a question appears in a bound channel, answer in that message's channel thread. For a pending decision, click Approve and confirm the action, or click Reject and give a reason. The board records your action with `(via Slack)` attribution. Mention @StateRush in the thread to steer the related agent conversation. If the agent is not running, Slack replies explain that it is not running rather than silently queuing a message. Slack Connect external users cannot act on board questions or decisions; a linked, authorized workspace member must do so.
+
 Interactive Claude Remote Control takeover
 - To resume a parked Claude conversation yourself, open a terminal on the machine with that session and run `claude --resume <session-id> --remote-control` in its project directory. If you are already in the interactive session, run `/remote-control` instead. Accept Claude's Remote Control prompt if it appears.
 - In Claude's interactive terminal, run `/remote-control` again to open the status panel and find the link or QR code. You can also find the session in your account at claude.ai/code or in the Claude app. Keep the local machine on and the Claude process running while using the remote view.
