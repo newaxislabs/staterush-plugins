@@ -8,7 +8,7 @@ Getting started after an invitation
 - Open `/mcp`, choose `staterush` under Built-in MCPs, and select Authenticate. Sign in with the invited verified email. Your first authenticated `/mcp` request accepts a matching pending invitation, and the workspace appears. If you were already signed in when invited, use `/mcp` -> `staterush` -> Reconnect (or Authenticate) to sign in again with that email.
 - Call `workspaces` to see the workspace and its board names. Call `board` with a listed board name and `view: "columns"` to confirm interactive access.
 - If `workspaces` returns an empty list, check that you signed in with the exact invited email and ask the inviter or workspace owner to verify the invitation. If `/mcp` shows a refusal, read its reason and follow its web URL.
-- An optional local lane for unattended work comes later. It uses a separate workspace-issued machine credential (a workspace API key), never the personal browser sign-in. Install the client launchers on `PATH` separately from the plugin, then run `staterush-setup` for guided lane setup.
+- An optional local lane for unattended work comes later. It uses a separate workspace-issued machine credential (a workspace API key), never the personal browser sign-in. Install the client launchers on `PATH` separately from the plugin, then run `staterush-setup` for guided lane setup. Setup enables marketplace auto-update unless your Claude Code user settings already specify true or false; turn it off through `/plugin` > Marketplaces > `staterush`.
 
 Concepts
 - Workspace: a team's private space. It holds boards, people and API keys. The `workspaces` tool lists the person's workspaces and which one this connection serves.

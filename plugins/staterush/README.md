@@ -216,8 +216,9 @@ generated changelog notes. To get a new version, run this in Claude Code:
 
     /plugin marketplace update staterush
 
-Or run `claude plugin update staterush@staterush` in a shell. Background updates
-are off by default. To enable or disable auto-update, open `/plugin`, select
+Or run `claude plugin update staterush@staterush` in a shell. Claude Code starts
+with background updates off for this marketplace; `staterush-setup` enables
+auto-update unless your user settings already specify true or false. To change it, open `/plugin`, select
 Marketplaces, select `staterush`, then select Enable auto-update or Disable
 auto-update. To stay on a specific release, remove the marketplace and add its
 tagged ref (for example, `/plugin marketplace add newaxislabs/staterush-plugins#v0.1.0`),
@@ -449,14 +450,14 @@ and does not qualify for unattended lane authentication, even if the initial
 SSO session works. See [Claude Code's Amazon Bedrock credential guidance](https://code.claude.com/docs/en/amazon-bedrock)
 for the export command and credential resolution behavior.
 
-After the dispatcher dry run, guided setup offers an optional Claude Code
-marketplace auto-update choice. Background updates are off by default. To enable
-them yourself in Claude Code, open `/plugin` > Marketplaces > `staterush` >
-Enable auto-update. Decline to keep your current setting or pinned release;
-setup still completes. To use a pinned release, remove the marketplace and add
-a tagged ref, for example `/plugin marketplace add newaxislabs/staterush-plugins#v0.1.0`,
-then install `staterush@staterush` from that marketplace. Guided setup does not
-change Claude Code settings or marketplace files.
+After the dispatcher dry run, `staterush-setup` enables auto-update for the
+StateRush marketplace in your Claude Code user `settings.json`, unless you
+already chose true or false there. Setup reports the resulting state. To turn
+auto-update off, open `/plugin` > Marketplaces > `staterush` > Disable auto-update.
+For a pinned release, turn auto-update off, remove the marketplace and add a
+tagged ref, for example `/plugin marketplace add newaxislabs/staterush-plugins#v0.1.0`,
+then install `staterush@staterush` from that marketplace. `DISABLE_AUTOUPDATER`,
+`DISABLE_UPDATES`, and `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` suppress updates.
 
 Managed lanes check the published client release independently of Claude Code's
 marketplace auto-update setting. When the engine recommends a newer release,

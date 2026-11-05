@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.39 (2026-11-05)
+## v0.3.40 (2026-11-05)
 
-Validate client GraphQL documents against live engine schema; Select production Principal fields for card assignees
+Enable StateRush marketplace auto-update in guided setup; fix: bind provider sessions only to exact telemetry identity; fix: distinguish missing MCP cards from failed reads
 
 ## v0.3.30 (2026-10-22)
 
