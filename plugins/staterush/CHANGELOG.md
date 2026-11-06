@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.40 (2026-11-05)
+## v0.3.41 (2026-11-06)
 
-Enable StateRush marketplace auto-update in guided setup; fix: bind provider sessions only to exact telemetry identity; fix: distinguish missing MCP cards from failed reads
+Support pinned station release without Claude plugin install; Keep script claim renewed while an unmapped question waits; Stop script commands and release claims on runner shutdown; fix: reconcile surplus macOS launchd station labels; Show latest local dispatcher receipt in station status; Fall back to selected relay state for legacy session binding; Add browser PKCE person login with device fallback
 
 ## v0.3.30 (2026-10-22)
 

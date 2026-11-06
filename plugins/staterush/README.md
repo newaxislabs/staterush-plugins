@@ -487,8 +487,12 @@ unset, admission is unchanged.
 
 An MCP seat can instead sign in as its person. Set `PULLBOARD_AUTH_KIND=person`
 for the first `staterush-login` invocation; the command reads the issuer,
-audience, and client id from the engine, prints the device verification URL and
-code, and stores the resulting refresh credential in the same protected file.
+audience, and native client id from the engine. Browser sign-in opens a Google
+page and prints its URL. The local callback completes
+sign-in and stores the refresh credential in the same protected file. Use
+`staterush-login --device` to choose the device verification URL and code instead.
+Over SSH, without a browser, or when the local callback port is busy, the command
+falls back to device sign-in and prints the verification URL and code.
 Later invocations recognize that person credential without the environment
 switch. To add a workspace key alongside the saved person credential, explicitly
 select machine login:

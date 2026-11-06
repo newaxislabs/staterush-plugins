@@ -8,3 +8,8 @@
 
 **Full Changelog**: https://github.com/newaxislabs/staterush-client/compare/v0.3.39...v0.3.40
 
+
+## v0.3.41
+
+**Full Changelog**: https://github.com/newaxislabs/staterush-client/compare/v0.3.40...v0.3.41
+
