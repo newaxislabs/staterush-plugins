@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.43 (2026-11-11)
+## v0.3.44 (2026-11-11)
 
-Release idle epic roots after children finish
+Load headless Mac agents in background session; Recheck saved launchd domain after GUI logout; Support headless Mac station launchd domains
 
 ## v0.3.30 (2026-10-22)
 
