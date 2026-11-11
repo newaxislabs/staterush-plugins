@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.42 (2026-11-11)
+## v0.3.43 (2026-11-11)
 
-Ignore gate and focused-test output files in card worktrees; Recover expired claims in checkout pool; Bind new dispatcher keys to the issuing machine; Client Build runbook: focused tests while working, one whole-suite gate at the end; Explain workspace key issuance collisions; Cover installed checkout pools on Linux supervisors; Read escaped checkout roots from systemd definition; Reject duplicate checkout roots through path aliases; Document repeated checkout root configuration; Scale pooled dispatcher capacity to configured roots; Require full Git checkouts as pool roots; Preserve installed checkout pools on repeat station up; and 20 more changes.
+Release idle epic roots after children finish
 
 ## v0.3.30 (2026-10-22)
 
