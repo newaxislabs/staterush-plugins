@@ -380,7 +380,7 @@ PULLBOARD_ENGINE=https://engine.example/graphql staterush-setup
 `staterush-setup` shows the device verification URL and code once, lists the
 workspaces the person belongs to and then the chosen workspace's boards (answer
 with the number or the name), saves the person credential, issues or reuses that
-workspace's dispatcher key (issuing needs `tenant.admin`), and runs
+workspace's dispatcher key, and runs
 `staterush-station up` for the board, which asks the workspace-and-board y/N
 consent and starts the lane. It then runs an unarmed `staterush-dispatch <board>
 once` and reports what the dispatcher would take, or which verdict a card still
@@ -390,6 +390,15 @@ board or a board with no managed rule for this host ends it with the reason and
 a non-zero exit, and it does not report setup complete.
 The lane supervises the dispatcher, telemetry relay, and transcript spy.
 Setup reports completion only after the configured relay answers its status check.
+
+One supervised machine service is installed per host and records multiple consented boards
+across workspaces. `staterush-station status` lists each pair and
+its station coverage. The current service runs one board; additional consented
+pairs wait for multi-board runtime support while retaining their consent.
+`staterush-station down <board>` stops the machine service only when that board
+and the selected workspace are its active pair. Running `down` for a waiting pair
+leaves the service and consent intact. Remove that exact pair from
+`~/.config/staterush/authorized-boards.json` to revoke its consent.
 
 Guided setup also offers an optional coordinator seat for the chosen workspace
 and board. It creates a separate, non-expiring reviewer key for this machine

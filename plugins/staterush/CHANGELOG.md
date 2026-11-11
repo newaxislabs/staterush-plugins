@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.41 (2026-11-06)
+## v0.3.42 (2026-11-11)
 
-Support pinned station release without Claude plugin install; Keep script claim renewed while an unmapped question waits; Stop script commands and release claims on runner shutdown; fix: reconcile surplus macOS launchd station labels; Show latest local dispatcher receipt in station status; Fall back to selected relay state for legacy session binding; Add browser PKCE person login with device fallback
+Ignore gate and focused-test output files in card worktrees; Recover expired claims in checkout pool; Bind new dispatcher keys to the issuing machine; Client Build runbook: focused tests while working, one whole-suite gate at the end; Explain workspace key issuance collisions; Cover installed checkout pools on Linux supervisors; Read escaped checkout roots from systemd definition; Reject duplicate checkout roots through path aliases; Document repeated checkout root configuration; Scale pooled dispatcher capacity to configured roots; Require full Git checkouts as pool roots; Preserve installed checkout pools on repeat station up; and 20 more changes.
 
 ## v0.3.30 (2026-10-22)
 
