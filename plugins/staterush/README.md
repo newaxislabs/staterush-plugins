@@ -267,6 +267,25 @@ configured board without changing its ref. Use `staterush_rename` to change the
 ref instead. The engine decides whether to accept a title edit and returns its
 reason and message if it refuses one.
 
+`staterush_read_agent_harnesses` takes `{}` and returns the complete effective
+harness declarations for the configured board. `staterush_update_agent_harness_models`
+takes `{harness, add?: string[], remove?: string[]}` and returns the full updated
+declaration. It preserves invocation and all other settings, appends new models
+once, and removes models without reordering the rest. Existing additions and
+absent removals are safe no-ops. Unknown harnesses, blank model names and models
+in both arrays are rejected before registration. A changed shipped declaration
+becomes a board override; the tool cannot target another board. Registration uses
+the engine's owner authorization and normal tool error conventions. Coordinate
+concurrent edits: the engine API performs a read followed by full registration.
+
+The shell equivalents are `staterush-board agent-harnesses BOARD`,
+`staterush-board add-harness-model BOARD HARNESS MODEL`, and
+`staterush-board remove-harness-model BOARD HARNESS MODEL`.
+When staffing application through `staterush_set_staffing` or
+`staterush-owner apply` is refused because a model is outside its harness
+vocabulary, the diagnostic includes the relevant add command and retains the
+original refusal and error behavior.
+
 `staterush_read_staffing` takes `{column}` and returns that column of the configured
 board with its staffing rules as the engine answers them (shape, concurrency, mode,
 runbook, `githubRunbookSource { repository path requestedRef }`, model, command and
@@ -886,6 +905,31 @@ staterush-watch renew --id supervisor --lease 3600
 staterush-watch run --interval 30
 staterush-watch remove --id supervisor
 ```
+
+Provider fallback (`--fallback-provider claude|codex [-- ARG ...]`) runs
+`staterush-watch deliver-provider --board BOARD --provider claude|codex -- ARG ...`,
+repeating `--board` for each subscription board. This entrypoint runs
+`claude --print ARG ...` or `codex exec ARG ...` and acknowledges delivery only
+after the provider completes with exit 0. Provider extra arguments retain their
+boundaries: for example `--fallback-provider claude -- --append-system-prompt 'Check current facts.'`
+passes one prompt argument. The notification JSON remains on delivery stdin; the
+provider receives a prompt containing that JSON and the subscription boards,
+with `PULLBOARD_BOARD` identifying the notification board (or the first subscribed
+board for a combined notification) and `PULLBOARD_WATCH_SUBSCRIBER` identifying
+the subscription. Help, version and dry-run extras are refused because they can
+exit successfully without handling the notification.
+
+Provider fallback failures use exponential backoff starting at 1 second, capped
+at a maximum of 60 seconds, with attempts on the next monitor sweep after each
+deadline. An unchanged failure emits one diagnostic per monitor process, using
+only bounded refusal categories (including `usage`), never raw provider output,
+arguments, credentials or notification text. Spawn errors, argument refusal,
+nonzero exit and timeout leave delivery pending with its existing identity;
+success acknowledges progress and resets the failure state. Retry pacing and
+diagnostic suppression reset when the monitor restarts; pending progress remains
+durable. The default child timeout is 120 seconds, overridden by
+`PULLBOARD_WATCH_FALLBACK_TIMEOUT_MS`. Command and webhook contracts are unchanged.
+
 
 Registration baselines each board cursor at its current engine watermark, so
 old history is not replayed and the next matching live event arrives within one

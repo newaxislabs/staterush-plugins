@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.44 (2026-11-11)
+## v0.3.45 (2026-11-12)
 
-Load headless Mac agents in background session; Recheck saved launchd domain after GUI logout; Support headless Mac station launchd domains
+Check paced card-watch retries with valid provider launch fixtures; Run watch provider fallbacks through a supported delivery entrypoint; Include harness tools in watcher surface contract; Keep CLI version helper with shared source modules; Expose effective harnesses and lossless board model edits; Keep spare script slots polling while sibling commands run; Report installed package version for standalone CLI flag; Stations install locked packages; Merge names every failing test
 
 ## v0.3.30 (2026-10-22)
 
