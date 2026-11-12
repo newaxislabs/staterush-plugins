@@ -87,6 +87,18 @@ An explicit concurrency sets that rule's cap independently of other rules.
 | `staterush-verify` | proves one installed provider round trip end to end |
 | `staterush-harness-adapter` | runs a provider CLI that does not speak the harness output contract, passes its output through, and on the line announcing its session writes the contract `session` event and binds that session for the relay (`--profile codex\|claude -- COMMAND ...`) |
 
+Script staffing rules may set `noteMode` to `FULL` (the default), `LAST_LINE`,
+or `NONE`. The runner concatenates stdout followed by stderr without inserting a
+separator, then trims the combined output. `FULL` records that output with the
+existing per-record truncation limits; `LAST_LINE` records only its final
+nonempty line; `NONE` records no child output. These modes apply to mapped visit
+notes and finish reasons, unmapped-exit question context, and visit notes for
+child-raised questions, including questions answered before the runner reads
+them. Command, exit-code, and verdict metadata remain. If the selected output is
+empty, the finish reason is `exit <code>`. Engines without `noteMode` remain
+usable through the legacy staffing query and default to `FULL`. Child-authored
+notes and questions are unaffected.
+
 Every tool talks to the engine through ONE board client, `src/board.js`; see
 [`docs/BOARD-CLIENT-CONTRACT.md`](docs/BOARD-CLIENT-CONTRACT.md). Environment
 variables keep their `PULLBOARD_*` names.

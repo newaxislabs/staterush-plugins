@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.46 (2026-11-12)
+## v0.3.47 (2026-11-12)
 
-Normalize Claude macOS registry start dates as UTC instants; Keep coverage concurrency validation consistent with admission; Resolve the effective harness PATH before admission; Require regular files in the real executable probe; Check local launch prerequisites before claims and explain machine coverage; Keep watcher transport timing separate from person token expiry; Fix Claude session discovery process-start comparison; Refresh person credentials across watcher registration and monitoring; Stop synthetic machine services before removing their homes; Publish cron fixture child identity evidence atomically; Serve agent and mapped script rules across consented machine pairs; Recognize cron support helpers by their installed launch command
+Ignore card snapshots workers leave in their worktree; Support explicit and engine-selected CLI claim rules; Keep script telemetry fixture within the finish-reason bound; Pair produced StateRush and legacy launch environment values; Allow optional noteMode selection against legacy schema; Support per-rule script output note modes
 
 ## v0.3.30 (2026-10-22)
 
