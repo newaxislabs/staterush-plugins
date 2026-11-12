@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.48 (2026-11-12)
+## v0.3.49 (2026-11-12)
 
-Hold durable batches with invalid delivery keys before egress; Bind secret-backed AgentCore workers to bootstrap workspace; Preserve absent-path handling and update fresh credential assertions; Verify alias-aware credential scoping across machine-service workspaces; Select StateRush paths while retaining existing legacy resources; Retain already canonical settings in service prefix allowlists; Verify remote process alias selection without inspecting live workers; Cover stored service aliases and preserve consumer cleanup and auth overrides; Resolve StateRush environment settings with legacy aliases and one deprecation notice; Isolate claim attribution fixture from test worker memory pressure; Preserve complete test reports when parallel workers force exit; Reserve the refusal fixture endpoint during parallel tests; and 2 more changes.
+Client runbooks name STATERUSH_* first, PULLBOARD_* as fallback; fix: stop lost workers before propagating history failures; fix: keep late resume cleanup off lost claims; fix: retry a due renewal only after authoritative reconciliation; fix: retain renewal deadline when reconciliation finds no extension; fix: supervise exact live claims independently of telemetry; Explain checkout pool blockers and manual Git recovery; Back off suppression permission refusals and expose runtime limitation; Reject withdrawn intake auth modes on creation; Keep epic checkouts reserved by held claims and guard resumes; feat: require confirmation to disconnect workspace Slack; Accept FIELDS for webhook endpoint creation and updates; and 8 more changes.
 
 ## v0.3.30 (2026-10-22)
 
