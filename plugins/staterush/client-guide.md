@@ -116,3 +116,19 @@ Local agent station on macOS or Linux
 - Event subscriptions reconnect after normal completion and resume from their last cursor.
 - Transcript demand subscriptions reconnect after normal completion and replay active demands with bounded retry.
 - MCP card transcript viewing reconnects to the selected visit after normal completion until the original deadline or an ended result. Each fresh subscription replays from its first record; the viewer skips the replay prefix by position and includes later records once, even when their content matches earlier records.
+
+Machine status explains every discovered workspace/board, station and rule using
+local launch prerequisites shared with admission. Missing command means its argv
+executable cannot be resolved; missing harness means no effective declaration;
+invalid harness means its declaration or selected model cannot launch. Driver mismatch assigns the rule to another host. No consent prevents discovery and
+claims, retaining previously known stations only to explain revocation. An inactive service cannot serve even an available rule. Discovery unavailable means
+the board could not be verified; it does not establish station coverage.
+
+Executable checks use the running service environment: its PATH and working
+directory, including relative and absolute executable paths and the provider
+behind a harness adapter. Installation, removal and environment changes are
+checked on the next evaluation and immediately before each new claim. Status
+uses the installed service launch environment, or the current environment when
+no service is installed. An executable being available does not establish
+provider authentication. Detected harnesses and board command availability are
+local status information; registration retains the existing supervisor contract.
