@@ -12,7 +12,7 @@ ordinary idle safety polls keep the dispatcher alive. If the limit expires, the
 dispatcher logs the elapsed duration, writes a durable handover for live workers,
 and exits nonzero so a service supervisor can start a replacement.
 
-`PULLBOARD_DISPATCH_VERDICTLESS_LIMIT` (default 3) caps verdict-less respawns.
+`STATERUSH_DISPATCH_VERDICTLESS_LIMIT` (default 3) caps verdict-less respawns.
 A worker that exits still holding its claim, without finishing the card or
 asking a question, is receipted with outcome `exited-without-verdict`, and its
 receipt points at the tail of its output. After that many such exits in a row
@@ -101,7 +101,7 @@ notes and questions are unaffected.
 
 Every tool talks to the engine through ONE board client, `src/board.js`; see
 [`docs/BOARD-CLIENT-CONTRACT.md`](docs/BOARD-CLIENT-CONTRACT.md). Environment
-variables keep their `PULLBOARD_*` names.
+variables use the `STATERUSH_*` names.
 
 Completion writes (`note`, `setFields`, and `finish`) keep their idempotency key
 and exact request in the execution state directory until confirmed. Concurrent
@@ -123,7 +123,7 @@ about 5% of it.
 ## Outbound telemetry allowlist
 
 The relay applies one fail-closed projection immediately before every outbound
-send, independently of identifier redaction. `PULLBOARD_REDACT=off` may disable
+send, independently of identifier redaction. `STATERUSH_REDACT=off` may disable
 identifier substitution, but it never disables this egress boundary. The exact
 product contract is [`specs/relay-egress-allowlist.json`](specs/relay-egress-allowlist.json).
 
@@ -148,7 +148,7 @@ use the same rule and deterministic bytes.
 
 `staterush-watch register` optionally accepts `--session-provider claude|codex
 --session-id ID`; Codex also uses `--codex-sock PATH` (or
-`PULLBOARD_CODEX_APP_SERVER_SOCK`). A targeted subscription tries that live
+`STATERUSH_CODEX_APP_SERVER_SOCK`). A targeted subscription tries that live
 session first and then uses its unchanged inbox, command, provider, or webhook
 fallback on every refusal. An untargeted subscription keeps the previous path.
 Renewals retain or update that target without putting credentials in argv.
@@ -248,16 +248,16 @@ The npm package is also a supervisor plugin for Codex (`.codex-plugin`, whose se
 `skills/`, which the Claude Code plugin loads, because it names the local `staterush_*`
 tools the hosted server does not have) and
 the actor-bound `staterush-mcp` server; no plugin files need to be copied into a
-customer repository. Configure `PULLBOARD_ENGINE`, `PULLBOARD_API_KEY`,
-`PULLBOARD_TENANT`, `PULLBOARD_BOARD`, and `PULLBOARD_ACTOR` as for the original
+customer repository. Configure `STATERUSH_ENGINE`, `STATERUSH_API_KEY`,
+`STATERUSH_TENANT`, `STATERUSH_BOARD`, and `STATERUSH_ACTOR` as for the original
 seven MCP tools; the MCP transport sends the configured machine credential,
 workspace, and delegated actor on every engine request. Then set
-`PULLBOARD_SUPERVISOR_ID`, `PULLBOARD_SUPERVISOR_SESSION`, and
-`PULLBOARD_SUPERVISOR_HOST` to register a judgement supervisor and expose the
-four supervisor tools. `PULLBOARD_SUPERVISOR_SELECT_STATION` names the board's own selection
+`STATERUSH_SUPERVISOR_ID`, `STATERUSH_SUPERVISOR_SESSION`, and
+`STATERUSH_SUPERVISOR_HOST` to register a judgement supervisor and expose the
+four supervisor tools. `STATERUSH_SUPERVISOR_SELECT_STATION` names the board's own selection
 station; there is no default, because station names belong to each board. A Claude
 supervisor may opt into session-descendant live delivery by setting
-`PULLBOARD_SUPERVISOR_WATCH_SUBSCRIPTION` to the id of its existing durable
+`STATERUSH_SUPERVISOR_WATCH_SUBSCRIPTION` to the id of its existing durable
 watch subscription. The subscription must name the same Claude session; the
 MCP process shares its registry cursor with the host watcher and stops polling
 and renewing the supervisor when its stdio session closes.
@@ -379,33 +379,33 @@ in shell history or a process command line:
 
 ```sh
 printf '%s\n' "$WORKSPACE_API_KEY" | \
-  PULLBOARD_ENGINE=https://engine.example/graphql \
-  PULLBOARD_TENANT=workspace-id staterush-login
+  STATERUSH_ENGINE=https://engine.example/graphql \
+  STATERUSH_TENANT=workspace-id staterush-login
 ```
 
 `staterush-login` accepts no arguments and reads exactly one API-key line from
-stdin. With `PULLBOARD_TENANT` unset it asks the engine which workspace the key
+stdin. With `STATERUSH_TENANT` unset it asks the engine which workspace the key
 belongs to (`me { workspace }`, sent with the key and no `X-Tenant`) and stores that,
 refusing, by name, only when the engine cannot say. It atomically creates
-`$XDG_CONFIG_HOME/pullboard/credentials.json` (or
-`~/.config/pullboard/credentials.json`) as mode 0600. The packaged tools refuse
+`$XDG_CONFIG_HOME/staterush/credentials.json` (or
+`~/.config/staterush/credentials.json`) as mode 0600. The packaged tools refuse
 an unsafe or malformed credentials file and require HTTPS plus both the tenant
-and key for a non-loopback engine. `PULLBOARD_ENGINE`, `PULLBOARD_TENANT`, and
-`PULLBOARD_API_KEY` override the corresponding saved values. Environment values override saved
+and key for a non-loopback engine. `STATERUSH_ENGINE`, `STATERUSH_TENANT`, and
+`STATERUSH_API_KEY` override the corresponding saved values. Environment values override saved
 credentials file values. Remote engines must use HTTPS. Numeric IPv4 127/8 and IPv6 ::1 loopback engines may use HTTP, and
 `staterush-login` records those tunnel endpoints exactly as supplied; `localhost` is refused
 because it requires name resolution. Numeric loopback engines remain
 usable without a workspace credential. `staterush-wake` remains
 local-only. The relay uses the saved machine login for native ingest and derives
 its ingest destination from the selected engine URL's origin. It does not need a
-separate ingest key for ordinary setup. An explicit `PULLBOARD_INGEST_ENDPOINT`
+separate ingest key for ordinary setup. An explicit `STATERUSH_INGEST_ENDPOINT`
 overrides that destination; existing ingest key and bearer settings remain available.
 
 To set up a dispatcher for one board, run one guided command with only the
 engine configured:
 
 ```sh
-PULLBOARD_ENGINE=https://engine.example/graphql staterush-setup
+STATERUSH_ENGINE=https://engine.example/graphql staterush-setup
 ```
 
 `staterush-setup` shows the device verification URL and code once, lists the
@@ -517,15 +517,15 @@ at most 10 MiB. The log directory and retained files are private to the lane
 user. Direct `staterush-dispatch` invocations still write to their usual streams.
 
 To defer new workers on selected stations while a host marker is fresh, set
-`PULLBOARD_DISPATCH_HOLD_MARKER` to its path,
-`PULLBOARD_DISPATCH_HOLD_MAX_AGE_SECONDS` to a positive age, and
-`PULLBOARD_DISPATCH_HOLD_STATIONS` to comma-separated station names in that
+`STATERUSH_DISPATCH_HOLD_MARKER` to its path,
+`STATERUSH_DISPATCH_HOLD_MAX_AGE_SECONDS` to a positive age, and
+`STATERUSH_DISPATCH_HOLD_STATIONS` to comma-separated station names in that
 dispatcher's environment. All three values are required together. Existing
 workers and claim recovery continue. Removing the marker, or letting it age
 beyond the limit, restores new admission on the next tick. With these values
 unset, admission is unchanged.
 
-An MCP seat can instead sign in as its person. Set `PULLBOARD_AUTH_KIND=person`
+An MCP seat can instead sign in as its person. Set `STATERUSH_AUTH_KIND=person`
 for the first `staterush-login` invocation; the command reads the issuer,
 audience, and native client id from the engine. Browser sign-in opens a Google
 page and prints its URL. The local callback completes
@@ -539,15 +539,15 @@ select machine login:
 
 ```sh
 printf '%s\n' "$WORKSPACE_API_KEY" | \
-  PULLBOARD_ENGINE=https://engine.example/graphql \
-  PULLBOARD_AUTH_KIND=machine staterush-login
+  STATERUSH_ENGINE=https://engine.example/graphql \
+  STATERUSH_AUTH_KIND=machine staterush-login
 ```
 
-Both credentials coexist in the protected file. Explicit `PULLBOARD_AUTH_KIND=person`
-selects the saved person credential even when `PULLBOARD_API_KEY` is set. Explicit
-`PULLBOARD_AUTH_KIND=machine` selects machine authentication for unattended tools.
+Both credentials coexist in the protected file. Explicit `STATERUSH_AUTH_KIND=person`
+selects the saved person credential even when `STATERUSH_API_KEY` is set. Explicit
+`STATERUSH_AUTH_KIND=machine` selects machine authentication for unattended tools.
 With no auth kind set,
-an explicit `PULLBOARD_API_KEY` takes precedence over saved person credentials;
+an explicit `STATERUSH_API_KEY` takes precedence over saved person credentials;
 otherwise a saved person credential selects person authentication. A saved machine key
 for a tenant is scoped to that same tenant: a request for another tenant requires that tenant's
 own saved key or an explicit API key. The MCP refreshes its access token before expiry and refuses board work
@@ -559,25 +559,25 @@ unattended fleet lanes.
 
 | variable | default | |
 |---|---|---|
-| `PULLBOARD_RELAY_HOST` | `127.0.0.1` | loopback only; a relay on `0.0.0.0` is an unauthenticated LAN ingest |
-| `PULLBOARD_RELAY_PORT` | policy `relay.defaultPort` | from `specs/worker-telemetry-policy.json`; workers are pointed at the same port |
-| `PULLBOARD_ENGINE` | unset | the engine's GraphQL endpoint for board and session queries |
-| `PULLBOARD_TENANT` | credentials file value | Hosted workspace id sent as `X-Tenant` |
-| `PULLBOARD_API_KEY` | credentials file value | Hosted workspace key sent only as `X-API-Key` |
-| `PULLBOARD_INGEST_ENDPOINT` / `_TOKEN` | engine origin / unset | native ingest uses the selected engine URL's origin; an explicit endpoint overrides the destination, and a token supplies optional bearer authentication |
-| `PULLBOARD_FANOUT_ENDPOINT` | unset | the customer's pre-existing collector |
-| `PULLBOARD_RELAY_BATCH_MAX_RECORDS` | `100` | positive safe-integer limit for records in each newly formed upstream request |
-| `PULLBOARD_RELAY_BATCH_MAX_BYTES` | `524288` (512 KiB) | positive safe-integer limit for exact serialized UTF-8 bytes in each newly formed upstream request |
-| `PULLBOARD_RELAY_SPOOL_MAX_RECORDS` | `100000` | hard positive safe-integer cap across spool and quarantine records; at the boundary ingress remains available by evicting the oldest unsent record and counting the capacity drop |
-| `PULLBOARD_RELAY_SPOOL_MAX_BYTES` | `536870912` (512 MiB) | hard positive safe-integer cap across spool and quarantine payload bytes with the same explicit oldest-unsent capacity-drop policy |
-| `PULLBOARD_RELAY_DELIVERY_CONCURRENCY` | `20` | positive safe-integer limit for simultaneous upstream deliveries; each provider session remains an ordered lane |
-| `PULLBOARD_RELAY_DELIVERY_TIMEOUT_MS` | `10000` | positive safe-integer timeout for each outbound delivery request, preventing a hung socket from pinning a lane forever |
-| `PULLBOARD_RELAY_STALE_AGE_MS` | `900000` (15 minutes) | positive safe-integer age at which the oldest undelivered spool record is stale |
-| `PULLBOARD_RELAY_PRESSURE_RSS_BYTES` | `268435456` (256 MiB) | positive safe-integer resident-memory threshold; the relay keeps accepting durably, pauses ordinary delivery passes, and permits one bounded progress pass every 30 seconds at or above it |
-| `PULLBOARD_RELAY_CAPTURE_MAX_AGE_MS` | `604800000` (7 days) | positive safe-integer receipt-age limit for redacted captures |
-| `PULLBOARD_RELAY_STATE_MAX_BYTES` | `2147483648` (2 GiB) | positive safe-integer target for all regular-file apparent bytes under the state directory |
-| `PULLBOARD_REDACT` | **on** | see "What is redacted" |
-| `PULLBOARD_TELEMETRY_HOME` | `$XDG_STATE_HOME/pullboard-telemetry` | disk buffer and state |
+| `STATERUSH_RELAY_HOST` | `127.0.0.1` | loopback only; a relay on `0.0.0.0` is an unauthenticated LAN ingest |
+| `STATERUSH_RELAY_PORT` | policy `relay.defaultPort` | from `specs/worker-telemetry-policy.json`; workers are pointed at the same port |
+| `STATERUSH_ENGINE` | unset | the engine's GraphQL endpoint for board and session queries |
+| `STATERUSH_TENANT` | credentials file value | Hosted workspace id sent as `X-Tenant` |
+| `STATERUSH_API_KEY` | credentials file value | Hosted workspace key sent only as `X-API-Key` |
+| `STATERUSH_INGEST_ENDPOINT` / `_TOKEN` | engine origin / unset | native ingest uses the selected engine URL's origin; an explicit endpoint overrides the destination, and a token supplies optional bearer authentication |
+| `STATERUSH_FANOUT_ENDPOINT` | unset | the customer's pre-existing collector |
+| `STATERUSH_RELAY_BATCH_MAX_RECORDS` | `100` | positive safe-integer limit for records in each newly formed upstream request |
+| `STATERUSH_RELAY_BATCH_MAX_BYTES` | `524288` (512 KiB) | positive safe-integer limit for exact serialized UTF-8 bytes in each newly formed upstream request |
+| `STATERUSH_RELAY_SPOOL_MAX_RECORDS` | `100000` | hard positive safe-integer cap across spool and quarantine records; at the boundary ingress remains available by evicting the oldest unsent record and counting the capacity drop |
+| `STATERUSH_RELAY_SPOOL_MAX_BYTES` | `536870912` (512 MiB) | hard positive safe-integer cap across spool and quarantine payload bytes with the same explicit oldest-unsent capacity-drop policy |
+| `STATERUSH_RELAY_DELIVERY_CONCURRENCY` | `20` | positive safe-integer limit for simultaneous upstream deliveries; each provider session remains an ordered lane |
+| `STATERUSH_RELAY_DELIVERY_TIMEOUT_MS` | `10000` | positive safe-integer timeout for each outbound delivery request, preventing a hung socket from pinning a lane forever |
+| `STATERUSH_RELAY_STALE_AGE_MS` | `900000` (15 minutes) | positive safe-integer age at which the oldest undelivered spool record is stale |
+| `STATERUSH_RELAY_PRESSURE_RSS_BYTES` | `268435456` (256 MiB) | positive safe-integer resident-memory threshold; the relay keeps accepting durably, pauses ordinary delivery passes, and permits one bounded progress pass every 30 seconds at or above it |
+| `STATERUSH_RELAY_CAPTURE_MAX_AGE_MS` | `604800000` (7 days) | positive safe-integer receipt-age limit for redacted captures |
+| `STATERUSH_RELAY_STATE_MAX_BYTES` | `2147483648` (2 GiB) | positive safe-integer target for all regular-file apparent bytes under the state directory |
+| `STATERUSH_REDACT` | **on** | see "What is redacted" |
+| `STATERUSH_TELEMETRY_HOME` | `$XDG_STATE_HOME/staterush-telemetry` | disk buffer and state |
 
 A malformed value is refused, not silently replaced with the default.
 
@@ -585,8 +585,8 @@ Batches held for a workspace without its credential have no age expiry. They
 remain durable until that workspace's credential becomes available and delivery
 drains them, or existing capacity eviction removes the oldest unsent records
 and counts the drops. Held batches share the spool and quarantine limits:
-`PULLBOARD_RELAY_SPOOL_MAX_RECORDS` defaults to `100000` records and
-`PULLBOARD_RELAY_SPOOL_MAX_BYTES` to `536870912` payload bytes (512 MiB).
+`STATERUSH_RELAY_SPOOL_MAX_RECORDS` defaults to `100000` records and
+`STATERUSH_RELAY_SPOOL_MAX_BYTES` to `536870912` payload bytes (512 MiB).
 These limits bound live payload accounting, not the total on-disk directory size.
 
 ### Board-owner workflow
@@ -614,9 +614,9 @@ or `filters` key, a live rule of that kind the key omits is removed through
 key changes and removes nothing of that kind. Paint the engine refuses stops
 the apply with the engine's reason and a non-zero exit.
 
-The command normally requires `PULLBOARD_API_KEY`, `PULLBOARD_TENANT`, and
-`PULLBOARD_ACTOR`. A developer using a legacy engine that enforces no workspace
-identity may set `PULLBOARD_ALLOW_UNAUTHENTICATED_LOOPBACK=1`; this exception is
+The command normally requires `STATERUSH_API_KEY`, `STATERUSH_TENANT`, and
+`STATERUSH_ACTOR`. A developer using a legacy engine that enforces no workspace
+identity may set `STATERUSH_ALLOW_UNAUTHENTICATED_LOOPBACK=1`; this exception is
 accepted only when both credential variables are absent and the endpoint host
 is `127.0.0.1`, `::1`, or `localhost`. It cannot enable an unauthenticated
 request to any non-loopback endpoint.
@@ -692,7 +692,7 @@ judges the relay by its own configuration, never the reader's environment;
 `destinations.source` says `relay` when that record was used and `reader` when
 no relay has written one yet.
 
-At or above `PULLBOARD_RELAY_PRESSURE_RSS_BYTES`, scheduled work pauses ordinary
+At or above `STATERUSH_RELAY_PRESSURE_RSS_BYTES`, scheduled work pauses ordinary
 outbound passes but permits one configured-size progress pass every 30 seconds,
 so persistent pressure cannot indefinitely starve a durable backlog. Receives
 remain durably acknowledged and the existing schedule rechecks pressure so
@@ -811,7 +811,7 @@ hashed, not dropped (decision `DECISION-INSTALL-ID`, 2026-09-02).
 `src/redact.js` implements it (`pb-${randomUUID()}`); the engine enforces it,
 refusing any payload whose identity values are not all one value starting `pb-`.
 
-There is no `PULLBOARD_REDACT_MODE`.
+There is no `STATERUSH_REDACT_MODE`.
 
 WHY HASH LOST, in the spec's own words (PII-012): *"A hash is reproducible by anyone
 holding a guess at the email, so a hashed id is a re-identifier wearing a disguise."*
@@ -826,7 +826,7 @@ The identifier set is asserted as EXACT, not a superset — `user.email`, `user.
 
 An explicit host label is allowed on authenticated helper presence and supervisor
 payloads for workspace admin status. It defaults to the OS hostname on macOS and
-Linux; `PULLBOARD_SUPERVISOR_HOST` overrides it. The client does not send a person
+Linux; `STATERUSH_SUPERVISOR_HOST` overrides it. The client does not send a person
 or principal field: the engine attributes the authenticated credential. Ordinary
 OTel and transcript telemetry still replaces identifying values, including
 `host.name`, with the installation ID under DECISION-INSTALL-ID.
@@ -884,7 +884,7 @@ is at least once: a retry after an ambiguous failure or timeout reuses that same
 id so the receiver can discard a duplicate. An acknowledged delivery is never
 retried, and the registry records at most one acknowledgement for each id.
 Command and provider fallbacks time out after 120 seconds by default (set
-`PULLBOARD_WATCH_FALLBACK_TIMEOUT_MS` to override this); webhook delivery keeps
+`STATERUSH_WATCH_FALLBACK_TIMEOUT_MS` to override this); webhook delivery keeps
 its HTTP transport timeout. Acknowledged durable arrival delivery is recorded,
 then its active subscription is removed atomically. It is therefore one-shot and
 later card events cannot notify it again. `staterush-watch
@@ -895,7 +895,7 @@ environment, or cursor file. A durable card watch with no explicit fallback uses
 the current provider (`CODEX_THREAD_ID` first, then `CLAUDE_CODE_SESSION_ID`) and
 defaults to Codex when it is invoked outside either provider.
 
-`staterush-watch` stores subscriptions under `PULLBOARD_WATCH_HOME` (or the
+`staterush-watch` stores subscriptions under `STATERUSH_WATCH_HOME` (or the
 normal telemetry state directory). A subscription has a stable id, one or more
 boards, repeated `--until` expressions, an optional live inbox, a required
 fallback, and a renewable lease. Expressions use the same vocabulary as
@@ -934,8 +934,8 @@ after the provider completes with exit 0. Provider extra arguments retain their
 boundaries: for example `--fallback-provider claude -- --append-system-prompt 'Check current facts.'`
 passes one prompt argument. The notification JSON remains on delivery stdin; the
 provider receives a prompt containing that JSON and the subscription boards,
-with `PULLBOARD_BOARD` identifying the notification board (or the first subscribed
-board for a combined notification) and `PULLBOARD_WATCH_SUBSCRIBER` identifying
+with `STATERUSH_BOARD` identifying the notification board (or the first subscribed
+board for a combined notification) and `STATERUSH_WATCH_SUBSCRIBER` identifying
 the subscription. Help, version and dry-run extras are refused because they can
 exit successfully without handling the notification.
 
@@ -948,7 +948,7 @@ nonzero exit and timeout leave delivery pending with its existing identity;
 success acknowledges progress and resets the failure state. Retry pacing and
 diagnostic suppression reset when the monitor restarts; pending progress remains
 durable. The default child timeout is 120 seconds, overridden by
-`PULLBOARD_WATCH_FALLBACK_TIMEOUT_MS`. Command and webhook contracts are unchanged.
+`STATERUSH_WATCH_FALLBACK_TIMEOUT_MS`. Command and webhook contracts are unchanged.
 
 
 Registration baselines each board cursor at its current engine watermark, so
@@ -972,7 +972,7 @@ timestamps: unchanged samples are silent, changes notify once, and clearing the
 state notifies once. Absence is the engine's own verdict (`Board.claimAbsences`),
 not something this package derives; an engine that cannot answer is reported as
 `unknown`, never as an absence alarm. The relay-backlog incident reads the local
-relay state named by `PULLBOARD_TELEMETRY_HOME`.
+relay state named by `STATERUSH_TELEMETRY_HOME`.
 
 Before delivering a historical `ask`, the production adapter checks the board's
 current `awaitingAnswer` state. Resolved questions and cards that have moved on
@@ -1007,3 +1007,5 @@ though inspection output redacts them.
 Run `staterush-watch` under a service supervisor that restarts it after process
 or host failure. An unsupervised watch that an operator must remember to keep
 running cannot report events or absence while it is down.
+
+Settings and path compatibility: [compatibility reference](docs/COMPATIBILITY.md).

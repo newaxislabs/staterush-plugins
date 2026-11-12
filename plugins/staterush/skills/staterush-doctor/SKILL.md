@@ -139,7 +139,7 @@ Only when the person wants to run agents unattended on their own machine (see th
   chat). Check that a credential is configured without printing it.
 - **The board's own station scripts and runbooks** are checked out from the board
   owner's repository, if the board has script stations.
-- **FAIL escalation:** if `PULLBOARD_WATCH_PERSON_COMMAND` is absent where a watcher
+- **FAIL escalation:** if `STATERUSH_WATCH_PERSON_COMMAND` is absent where a watcher
   runs, unanswered questions have no external person notification. Configure the
   command and inspect the watcher again before treating it as attended.
 
@@ -149,7 +149,7 @@ For a person who wants parked question popups on their own laptop, use the
 installed watcher opt-in described in the watcher section of `README.md`: register the
 person with `--local-questions`, exact `--board` and `--worker` values, and
 optional `--station` and `--host` filters. Set
-`PULLBOARD_WATCH_TERMINAL_CONFIG` on that laptop to a JSON file with its
+`STATERUSH_WATCH_TERMINAL_CONFIG` on that laptop to a JSON file with its
 desktop terminal, provider executables, notification command, and each worker
 host's dispatch receipt directory. A remote worker also needs a batch-capable
 SSH mapping and readable receipts on that host. Check `staterush-watch inspect
@@ -294,7 +294,7 @@ one into a file or a command line.
 
 For a new board, create or reshape the board, then publish a managed runbook rule with a nonempty runbook and a driver eligible for this host (empty, `any`, or this host's name), then run `staterush-station up`. Inspect the board's staffing with `staterush-owner export BOARD --output board.json`; edit its column's `staffing` array, preview with `staterush-owner apply board.json`, and publish with `staterush-owner apply board.json --apply`. If no eligible rule exists, publish one before retrying station up.
 
-To set up a dispatcher for one board from scratch, suggest `PULLBOARD_ENGINE=<engine url> staterush-setup`. It signs the person in with one device code, offers their workspaces and that workspace's boards, issues or reuses the workspace dispatcher key (issuing needs `tenant.admin`), runs `staterush-station up` with its consent prompt, and reports an unarmed dispatcher dry run. If it stops, its last line names the reason: a declined consent, a missing permission, an unreadable board, or no managed rule whose driver names this host.
+To set up a dispatcher for one board from scratch, suggest `STATERUSH_ENGINE=<engine url> staterush-setup`. It signs the person in with one device code, offers their workspaces and that workspace's boards, issues or reuses the workspace dispatcher key (issuing needs `tenant.admin`), runs `staterush-station up` with its consent prompt, and reports an unarmed dispatcher dry run. If it stops, its last line names the reason: a declined consent, a missing permission, an unreadable board, or no managed rule whose driver names this host.
 
 For each workspace and board pair, `staterush-station up` asks for y/N consent after validating the saved login, board access, and eligible managed rule. It names the effective workspace ID and board before saving consent or starting a lane. A legacy board-name file grants no consent; declining leaves it unchanged. Removing a scoped pair revokes future dispatcher and script-runner claims for that pair, even if another workspace still consents to the same board.
 
@@ -303,3 +303,5 @@ On macOS, use `staterush-station up <board> [column] [--key-file path] [--root p
 On Linux, the same `staterush-station up <board> [column] [--key-file path] [--root path]` command installs a per-board systemd user service when the user manager answers. Configure login persistence or lingering as needed. Without a user systemd manager, it installs a user cron keepalive that checks once a minute and locks against duplicate dispatchers. `staterush-station status <board>` names the supervisor and reports unavailable fields explicitly; `staterush-station down <board>` removes the supervisor and requests drain. For a refused up, check machine credentials, board readability, the authorized-boards file, and matching managed staffing. For a stopped systemd lane, inspect `systemctl --user status staterush-station-<board>.service` and its user journal; for cron, inspect `crontab -l` and confirm the cron daemon runs.
 
 For an unavailable Open in terminal action, run `staterush-station status <board>` on the worker's own machine. Its visit input helper line names a missing or stopped `staterush-spy`; rerun `staterush-station up <board>` to install or start it. If machine credentials are missing or invalid, run `staterush-login` with the workspace machine key, or use `staterush-station up <board> --key-file <path>`; do not put the key in a service definition. A present saved key is not proof that the engine accepts it: if the spy log reports authorization refusal, renew the key and restart the lane. The spy log names an engine lacking `visitInputs` and `reportVisitInput`; update that engine. A stream on an older engine without `kind` cannot receive foreground requests; update that engine. A missing dispatcher terminal capability means rerun station up in the desktop session with a supported terminal installed, then check the dispatcher status and log.
+
+Settings and path compatibility: [compatibility reference](../../docs/COMPATIBILITY.md).

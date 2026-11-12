@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.49 (2026-11-12)
+## v0.3.50 (2026-11-13)
 
-Client runbooks name STATERUSH_* first, PULLBOARD_* as fallback; fix: stop lost workers before propagating history failures; fix: keep late resume cleanup off lost claims; fix: retry a due renewal only after authoritative reconciliation; fix: retain renewal deadline when reconciliation finds no extension; fix: supervise exact live claims independently of telemetry; Explain checkout pool blockers and manual Git recovery; Back off suppression permission refusals and expose runtime limitation; Reject withdrawn intake auth modes on creation; Keep epic checkouts reserved by held claims and guard resumes; feat: require confirmation to disconnect workspace Slack; Accept FIELDS for webhook endpoint creation and updates; and 8 more changes.
+set-highlight: allow a border-only highlight with no fill colour; Record claim loss first detected during handover adoption; Reject dispatcher-owned harness environment declarations; Recover exact-card dirty roots after quiescent claim loss; Preserve explicit provider holds when collecting stopped workers; Preserve Claude worker resource sessions and validate exact bindings; Align merged relay capacity documentation check with canonical settings; Use canonical settings in newly merged relay guidance; Align remaining public wording assertions with StateRush settings; Teach canonical StateRush settings in public guidance and setup
 
 ## v0.3.30 (2026-10-22)
 

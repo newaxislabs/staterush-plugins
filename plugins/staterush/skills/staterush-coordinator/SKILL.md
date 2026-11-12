@@ -156,3 +156,5 @@ their objective, answering routine questions, unsticking delivery. Ask them firs
 When you ask, lead with the concrete scenario and the behaviour each option produces,
 not the design. While a line is paused for measurement or maintenance, make no board
 moves that would start work.
+
+Settings and path compatibility: [compatibility reference](../../docs/COMPATIBILITY.md).

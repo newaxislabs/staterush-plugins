@@ -5,10 +5,10 @@ description: Start guided local StateRush setup from a Claude plugin without req
 
 # Set up a local StateRush station
 
-Ask the person for the StateRush engine URL if it is not already configured as `PULLBOARD_ENGINE`. The plugin carries the setup bundle. Run its bootstrap from Claude Code:
+Ask the person for the StateRush engine URL if it is not already configured as `STATERUSH_ENGINE`. The plugin carries the setup bundle. Run its bootstrap from Claude Code:
 
 ```sh
-PULLBOARD_ENGINE="<the person's StateRush HTTPS endpoint>" /bin/sh "$CLAUDE_PLUGIN_ROOT/skills/staterush-setup/start.sh"
+STATERUSH_ENGINE="<the person's StateRush HTTPS endpoint>" /bin/sh "$CLAUDE_PLUGIN_ROOT/skills/staterush-setup/start.sh"
 ```
 
 The bootstrap checks Node 20 or newer and starts guided setup. Answer its workspace, board, and consent prompts with the person; do not infer consent. It installs user launchers for the local tools and adds the user's bin directory to the shell login profile when safe. If the profile is unsafe or unwritable, show the exact repair line and target file printed by setup.
@@ -24,3 +24,5 @@ Copy the printed, secret-free local stdio MCP entry into the chosen project's
 shown by setup. After provisioning, rerun setup and supply the key secret from
 a mode-0600 protected file or piped stdin. Keep the secret out of arguments and
 project MCP configuration.
+
+Settings and path compatibility: [compatibility reference](../../docs/COMPATIBILITY.md).

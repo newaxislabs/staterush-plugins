@@ -71,12 +71,12 @@ configuration outside the plugin directory so plugin updates don't erase it.
 When telemetry is enabled and a relay is configured, the dispatcher checks that
 the configured relay answers before each worker starts. If it is unreachable,
 the worker starts without telemetry and the lane reports UNOBSERVED with a relay
-start command for the selected host and port. Set `PULLBOARD_REQUIRE_RELAY=1` in
+start command for the selected host and port. Set `STATERUSH_REQUIRE_RELAY=1` in
 the lane environment to refuse worker spawning until the relay answers. If the
 relay answers but its delivery route is unhealthy, the dispatcher may still
 spawn the worker with a warning; repair the route so its telemetry reaches
 StateRush.
-Setting `PULLBOARD_TELEMETRY=off` deliberately starts workers without telemetry.
+Setting `STATERUSH_TELEMETRY=off` deliberately starts workers without telemetry.
 
 ## Credentials
 
@@ -85,16 +85,16 @@ web app, plus the workspace id. Never use the person's own sign-in for a lane: l
 run unattended, and their actions should be recorded as the lane, not as the person.
 
 - `staterush-login` stores a key without it touching shell history: it reads exactly
-  one key line from stdin, with `PULLBOARD_ENGINE` (e.g.
+  one key line from stdin, with `STATERUSH_ENGINE` (e.g.
   `https://app.staterush.com/graphql`) set, and writes a mode-0600 credentials file.
-  Leave `PULLBOARD_TENANT` unset: login asks StateRush which workspace the key belongs
-  to. Only if it says StateRush could not tell, set `PULLBOARD_TENANT` to the workspace
-  id, which a workspace owner can give the person. `PULLBOARD_API_KEY` and `PULLBOARD_TENANT`
+  Leave `STATERUSH_TENANT` unset: login asks StateRush which workspace the key belongs
+  to. Only if it says StateRush could not tell, set `STATERUSH_TENANT` to the workspace
+  id, which a workspace owner can give the person. `STATERUSH_API_KEY` and `STATERUSH_TENANT`
   in a lane's environment override it.
 - The relay uses the saved machine login for native ingest. It derives the ingest
   destination from the selected engine URL's origin and sends the saved workspace
   key; ordinary relay setup needs no separate ingest key. Set
-  `PULLBOARD_INGEST_ENDPOINT` only to override that destination.
+  `STATERUSH_INGEST_ENDPOINT` only to override that destination.
 - Never print a key, never put one on a command line or in the plugin directory, and
   never ask the person to paste one into the chat. Check that a credential exists by
   file mode and key *names*, not values.
@@ -125,7 +125,7 @@ station command.
   and exits without killing them; the next dispatcher for that board adopts them. Start
   the replacement at once: a handed-over worker has no one renewing its lease or
   recording its result until it is adopted. Check the new log for the adoption.
-- To stop a board for good, run the dispatcher with `PULLBOARD_DISPATCH_STOP_MODE=drain`:
+- To stop a board for good, run the dispatcher with `STATERUSH_DISPATCH_STOP_MODE=drain`:
   SIGTERM then stops new work and waits for every worker to finish.
 - A second SIGTERM escalates: it stops the recorded workers and releases their claims.
 - Roll out a new version one lane at a time, confirming each lane's new PID and version
@@ -187,3 +187,5 @@ Rules that cost real nights to learn:
 - **Stopping a lane the wrong way strands claims.** A killed worker can't release its
   card; the claim stands until its lease lapses or a dispatcher releases it.
 - **Read every command's result.** A refusal is the answer, not a cue to try another route.
+
+Settings and path compatibility: [compatibility reference](../../docs/COMPATIBILITY.md).

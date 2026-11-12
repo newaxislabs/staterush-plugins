@@ -24,7 +24,7 @@ authoritative answer, not permission to improvise another route.
 - Read the board before selection. A selection hold constrains selection only: do not
   select the held card, and do not reinterpret the hold as permission to change it.
 - Select an eligible card with `staterush_select`. It is offered only when the operator has
-  configured a selection station (`PULLBOARD_SUPERVISOR_SELECT_STATION`); without one,
+  configured a selection station (`STATERUSH_SUPERVISOR_SELECT_STATION`); without one,
   selection is not part of this supervisor's authority. Card titles state outcomes; use the title and
   durable fields to understand what is being selected, then check the engine result.
 - Retire only a designated obsolete card with `staterush_retire` and a concrete reason. Check the
@@ -44,3 +44,5 @@ action: explain the fact and leave process authority with the operator.
 
 These instructions are packaged with version 0.0.1 of the plugin. Keep customer prompts
 and card content on the customer machine; send only configured engine operations.
+
+Settings and path compatibility: [compatibility reference](../../../docs/COMPATIBILITY.md).
