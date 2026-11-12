@@ -581,6 +581,14 @@ unattended fleet lanes.
 
 A malformed value is refused, not silently replaced with the default.
 
+Batches held for a workspace without its credential have no age expiry. They
+remain durable until that workspace's credential becomes available and delivery
+drains them, or existing capacity eviction removes the oldest unsent records
+and counts the drops. Held batches share the spool and quarantine limits:
+`PULLBOARD_RELAY_SPOOL_MAX_RECORDS` defaults to `100000` records and
+`PULLBOARD_RELAY_SPOOL_MAX_BYTES` to `536870912` payload bytes (512 MiB).
+These limits bound live payload accounting, not the total on-disk directory size.
+
 ### Board-owner workflow
 
 `staterush-owner define BOARD --file FILE` creates a board from a raw

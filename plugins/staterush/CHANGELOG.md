@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.3.47 (2026-11-12)
+## v0.3.48 (2026-11-12)
 
-Ignore card snapshots workers leave in their worktree; Support explicit and engine-selected CLI claim rules; Keep script telemetry fixture within the finish-reason bound; Pair produced StateRush and legacy launch environment values; Allow optional noteMode selection against legacy schema; Support per-rule script output note modes
+Hold durable batches with invalid delivery keys before egress; Bind secret-backed AgentCore workers to bootstrap workspace; Preserve absent-path handling and update fresh credential assertions; Verify alias-aware credential scoping across machine-service workspaces; Select StateRush paths while retaining existing legacy resources; Retain already canonical settings in service prefix allowlists; Verify remote process alias selection without inspecting live workers; Cover stored service aliases and preserve consumer cleanup and auth overrides; Resolve StateRush environment settings with legacy aliases and one deprecation notice; Isolate claim attribution fixture from test worker memory pressure; Preserve complete test reports when parallel workers force exit; Reserve the refusal fixture endpoint during parallel tests; and 2 more changes.
 
 ## v0.3.30 (2026-10-22)
 
